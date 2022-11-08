@@ -1,5 +1,5 @@
 <?php
-	require_once 'DBClasses.php';
+	require_once 'dbClasses.php';
 	require_once 'tables.php';
 
 	$con = new mysqli('localhost', 'root', 'root', 'project');
@@ -32,7 +32,7 @@
 				while ($record = $result->fetch_assoc()) {
 					echo '<tr>';
 					foreach ($table->getColumns() as $col) {
-						echo '<td>' . $record[$col->getName()] . '</td>';
+						echo '<td>' . $col->getValue($record) . '</td>';
 					}
 					echo '</tr>';
 				}

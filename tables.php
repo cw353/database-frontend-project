@@ -16,6 +16,7 @@
 		]),
 		'repairtechnician' => new Table('repairtechnician', 'Repair Technicians', [
       new Column('rtid', 'ID', 'repairtechnician'),
+			new Column('fullname', 'Full Name', 'repairtechnician', fn($r) => $r['rtfname'] . ' ' . $r['rtlname']),
 			new Column('rtfname', 'First Name', 'repairtechnician'),
 			new Column('rtlname', 'Last Name', 'repairtechnician'),
 		]),
