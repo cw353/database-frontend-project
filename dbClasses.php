@@ -5,9 +5,6 @@
 			$this->name = $name;
 			$this->label = $label;
 			$this->columns = $columns;
-			/*foreach ($columns as $col) {
-				array_push($this->columns, new Column($col['name'], $col['label'], $col['sourceTableName'] ? $col['sourceTableName'] : $this->name));
-			}*/
 		}
 		function getName() {
 			return $this->name;
@@ -21,11 +18,12 @@
 	}
 
 	class Column {
-		private $name, $label, $sourceTableName;
-		function __construct(string $name, string $label, string $sourceTableName) {
+		private $name, $label, $sourceTableName, $sqlExpression;
+		function __construct(string $name, string $label, string $sourceTableName, string $sqlExpression = null) {
 			$this->name = $name;
 			$this->label = $label;
 			$this->sourceTableName = $sourceTableName;
+			$this->sqlExpression = $sqlExpression;
 		}
 		function getName() {
 			return $this->name;
@@ -35,6 +33,9 @@
 		}
 		function getSourceTableName() {
 			return $this->sourceTableName;
+		}
+		function getSqlExpression() {
+			return $this->sqlExpression;
 		}
 	}
 ?>

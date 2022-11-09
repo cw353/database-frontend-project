@@ -9,8 +9,6 @@
 	$query = formulateSelectQuery($table);
 	$result = $con->query($query);
 
-	echo $query;
-
 ?>
 
 <!DOCTYPE html>
