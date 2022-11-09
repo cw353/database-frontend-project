@@ -13,13 +13,16 @@
 
 	/* formulate a select query for the specified table object */
 	function formulateSelectQuery(Table $table) {
-		$query = 'select *'; // select all columns
-		// also select any additional expressions specified in the columns list
-		foreach ($table->getColumns() as $col) {
-			$sqlExpression = $col->getSqlExpression();
-			$query .= $sqlExpression ? ", $sqlExpression as " . $col->getName() : '';
+		$query = 'select ';
+		$columns = $table->getColumns();
+		$numcols = sizeof($columns);
+		for ($i = 0; $i < $numcols; $i++) {
+			if ($i > 0) $query .= ', ';
+			$sqlExpression = $columns[$i]->getSqlExpression();
+			$query .= $sqlExpression
+				? "$sqlExpression as " . $columns[$i]->getName()
+				: $columns[$i]->getName();
 		}
-		// specify the source table
 		$query .= ' from ' . $table->getName();
 		return $query;
 	}
