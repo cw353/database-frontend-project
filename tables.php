@@ -16,7 +16,7 @@
 		]),
 		'repairtechnician' => new Table('repairtechnician', 'Repair Technicians', [
       new Column('rtid', 'ID', 'repairtechnician'),
-			new Column('fullname', 'Full Name', 'repairtechnician', fn($r) => $r['rtfname'] . ' ' . $r['rtlname']),
+			new Column('fullname', 'Full Name', 'repairtechnician', "concat(rtfname, ' ', rtlname)"),
 			new Column('rtfname', 'First Name', 'repairtechnician'),
 			new Column('rtlname', 'Last Name', 'repairtechnician'),
 		]),
@@ -26,6 +26,12 @@
 		]),
 		'shift' => new Table('shift', 'Shift', [
       new Column('driverid', 'ID', 'driver'),
+			new Column('shiftstart_date', 'Shift Start Date', 'shift', 'date(shiftstart)'),
+			new Column('shiftstart_time', 'Shift Start Time', 'shift', 'time(shiftstart)'),
+			new Column('shiftend_date', 'Shift End Date', 'shift', 'date(shiftend)'),
+			new Column('shiftend_time', 'Shift End Time', 'shift', 'time(shiftend)'),
+			new Column('shiftlength_in_hrs', 'Shift Length (Hours)', 'shift', 'round(timestampdiff(minute, shiftstart, shiftend)/60, 2)'),
+			new Column('hourlypay', 'Hourly Pay', 'shift'),
 		]),
     'truckrepairs' => new Table('truckrepairs', 'Truck Repairs', [
       new Column('rtid', 'Repair Technician ID', 'repairtechnician'),
