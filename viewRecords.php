@@ -37,5 +37,13 @@
 				}
 			?>
 		</table>
+
+		<br>
+
+		<form method="post" action="chooseTable.php">
+			<input type="submit" value="View Records for Another Table">
+		</form>
+
+
 	</body>
 </html>

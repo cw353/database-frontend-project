@@ -1,4 +1,6 @@
 <?php
+	require_once 'dbClasses.php';
+
   $tables = array(
     'driver' => new Table('driver', 'Drivers', [
       new Column('driverid', 'ID', 'driver'),
