@@ -41,7 +41,7 @@
 		<br>
 
 		<form method="post" action="chooseTable.php">
-			<input type="submit" value="View Records for Another Table">
+			<button type="submit">View Records for Another Table</button>
 		</form>
 
 

@@ -9,6 +9,7 @@
 	</head>
 
 	<body>
+		<header>Choose a table for which to view records.</header>
 		<form method="get" action="viewRecords.php">
 			<select name="table_to_query">
 				<?php
@@ -17,7 +18,7 @@
 					}
 				?>
 			</select>
-			<input type="submit" value="Get Table Records">
+			<button type="submit">View Table Records</button>
 		</form>
 	</body>
 </html>
