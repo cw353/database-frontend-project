@@ -12,7 +12,7 @@
 	}
 
 	/* formulate a select query for the specified table object */
-	function formulateSelectQuery(Table $table) {
+	function formulateSelectQuery(Table $table, $filters = null) {
 		$query = 'select ';
 		$columns = $table->getColumns();
 		$numcols = sizeof($columns);
@@ -24,6 +24,9 @@
 				: $columns[$i]->getName();
 		}
 		$query .= ' from ' . $table->getName();
+		if (!empty($filters)) {
+			$query .= ' where ' . join(' and ', $filters);
+		}
 		return $query;
 	}
 ?>

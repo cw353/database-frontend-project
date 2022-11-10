@@ -10,7 +10,7 @@
 
 	<body>
 		<header>Choose a table for which to view records.</header>
-		<form method="get" action="viewRecords.php">
+		<form method="get" action="filterRecords.php">
 			<select name="table_to_query">
 				<?php
 					foreach ($tables as $key=>$value) {
@@ -18,7 +18,7 @@
 					}
 				?>
 			</select>
-			<button type="submit">View Table Records</button>
+			<button type="submit">Filter Table Records</button>
 		</form>
 	</body>
 </html>
