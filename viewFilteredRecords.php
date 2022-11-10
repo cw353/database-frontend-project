@@ -7,33 +7,45 @@
 	$table_to_query = $_GET['table_to_query'];
 	$table = $tables[$table_to_query];
 
-	$filter_expr = [];
-	$filter_val = [];
-	$types = '';
+	$filter_expr = []; // filter expressions
+	$filter_var = []; // comparands to bind for filters
+	$types = ''; // types of variables to bind for filters
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
+		// add to filters only if comparand was provided
 		if (!empty($_GET[$colname])) {
-			$op = $_GET[$colname.'_op'];
+			$op = $_GET[$colname.'_op']; // operator info
+			// comparand
 			$comparand = (($op === 'c' or $op === 'end') ? '%' : '')
-				. sanitizeSql($mysqli, $_GET[$colname])
+				. $_GET[$colname]
 				. (($op === 'c' or $op === 'start') ? '%' : '');
+			// sql operator
 			$sql_op = empty($op)
 				? '='
 				: $operators[$op]['op'];
-			$col_expr = $col->getSqlExpression();
-			$expr = "$col_expr $sql_op ?";
+			$attr = $col->getSqlExpression(); // attribute
+			// build expression from attribute and operator with ? placeholder for var
+			$expr = "$attr $sql_op ?";
 			array_push($filter_expr, $expr);
-			array_push($filter_val, $comparand);
+			array_push($filter_var, $comparand);
 			$types .= 's';
 		}
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
-	echo $query;
-	$stmt = $mysqli->prepare($query);
-	$stmt->bind_param($types, ...$filter_val);
-	$stmt->execute();
-	$result = $stmt->get_result();
+
+	$result = null;
+	$stmt = null;
+	if (sizeof($filter_expr) > 0) {
+		// use prepared statements if filtering data
+		$stmt = $mysqli->prepare($query);
+		$stmt->bind_param($types, ...$filter_var);
+		$stmt->execute();
+		$result = $stmt->get_result();
+	} else {
+		// otherwise, use regular query
+		$result = $mysqli->query($query);
+	}
 
 ?>
 
@@ -65,7 +77,7 @@
 					while ($record = $result->fetch_assoc()) {
 						echo '<tr>';
 						foreach ($table->getColumns() as $col) {
-							$val = $record[$col->getName()];
+							$val = sanitizeHtml($record[$col->getName()]);
 							$foreignKeyInfo = $col->getForeignKeyInfo();
 							echo '<td>';
 							echo empty($foreignKeyInfo) ? $val : getForeignKeyLink($val, $foreignKeyInfo);
@@ -89,5 +101,6 @@
 
 <?php
 	$result && $result->free();
+	$stmt && $stmt->close();
 	$mysqli && $mysqli->close();
 ?>
