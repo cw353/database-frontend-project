@@ -22,7 +22,6 @@
 	}
 
 	$query = formulateSelectQuery($table, $filters);
-	echo $query;
 	$result = $con->query($query);
 
 ?>
@@ -34,25 +33,34 @@
 	</head>
 
 	<body>
-		<table border='1'>
-			<caption><?php echo $table->getLabel() ?></caption>
-			<tr>
+		<?php
+			if (!$result) {
+				echo "<p>An error occurred: $con->error.</p>";
+			} else {
+				echo "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
+			}
+		?>
+		<?php if ($result && $result->num_rows > 0): ?>
+			<table border='1'>
+				<caption><?php echo $table->getLabel() ?></caption>
+				<tr>
+					<?php
+						foreach ($table->getColumns() as $col) {
+							echo '<th>' . $col->getLabel() . '</th>';
+						}
+					?>
+				</tr>
 				<?php
-					foreach ($table->getColumns() as $col) {
-						echo '<th>' . $col->getLabel() . '</th>';
+					while ($record = $result->fetch_assoc()) {
+						echo '<tr>';
+						foreach ($table->getColumns() as $col) {
+							echo '<td>' . $record[$col->getName()] . '</td>';
+						}
+						echo '</tr>';
 					}
 				?>
-			</tr>
-			<?php
-				while ($record = $result->fetch_assoc()) {
-					echo '<tr>';
-					foreach ($table->getColumns() as $col) {
-						echo '<td>' . $record[$col->getName()] . '</td>';
-					}
-					echo '</tr>';
-				}
-			?>
-		</table>
+			</table>
+		<?php endif; ?>
 
 		<br>
 
@@ -63,3 +71,8 @@
 
 	</body>
 </html>
+
+<?php
+	$result->free();
+	$con->close();
+?>
