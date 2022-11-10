@@ -1,30 +1,39 @@
 <?php
 	require_once 'helperFunctions.php';
 	require_once 'tables.php';
+	require_once 'operators.php';
 
-	$con = new mysqli('localhost', 'root', 'root', 'project');
+	$mysqli = new mysqli('localhost', 'root', 'root', 'project');
 	$table_to_query = $_GET['table_to_query'];
 	$table = $tables[$table_to_query];
 
-	$filters = [];
+	$filter_expr = [];
+	$filter_val = [];
+	$types = '';
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
 		if (!empty($_GET[$colname])) {
 			$op = $_GET[$colname.'_op'];
-			$comparand = (($op === 'like' or $op === 'ends') ? '%' : '')
-				. sanitizeSql($con, $_GET[$colname])
-				. (($op === 'like' or $op === 'starts') ? '%' : '');
+			$comparand = (($op === 'c' or $op === 'end') ? '%' : '')
+				. sanitizeSql($mysqli, $_GET[$colname])
+				. (($op === 'c' or $op === 'start') ? '%' : '');
 			$sql_op = empty($op)
 				? '='
-				: ($op === 'starts' or $op === 'ends') ? 'like' : $op;
+				: $operators[$op]['op'];
 			$col_expr = $col->getSqlExpression();
-			$filter = "$col_expr $sql_op '$comparand'";
-			array_push($filters, $filter);
+			$expr = "$col_expr $sql_op ?";
+			array_push($filter_expr, $expr);
+			array_push($filter_val, $comparand);
+			$types .= 's';
 		}
 	}
 
-	$query = formulateSelectQuery($table, $filters);
-	$result = $con->query($query);
+	$query = formulateSelectQuery($table, $filter_expr);
+	echo $query;
+	$stmt = $mysqli->prepare($query);
+	$stmt->bind_param($types, ...$filter_val);
+	$stmt->execute();
+	$result = $stmt->get_result();
 
 ?>
 
@@ -37,7 +46,7 @@
 	<body>
 		<?php
 			if (!$result) {
-				echo "<p>An error occurred: $con->error.</p>";
+				echo "<p>An error occurred while trying to process your query.</p>";
 			} else {
 				echo "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
 			}
@@ -80,5 +89,5 @@
 
 <?php
 	$result && $result->free();
-	$con && $con->close();
+	$mysqli && $mysqli->close();
 ?>
