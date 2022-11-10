@@ -27,7 +27,11 @@
 			<?php
 				$operators = [
 					['=',  'is'],
-					['<',  'is less than'], ['>',  'is greater than'],
+					['!=', 'is not'],
+					['<',  'is less than'],
+					['<=', 'is less than or equal to'],
+					['>',  'is greater than'],
+					['>=', 'is greater than or equal to'], 
 					['starts', 'starts with'],
 					['ends', 'ends with'],
 					['like',  'contains'],
@@ -35,7 +39,7 @@
 				foreach ($table->getColumns() as $col) {
 					$colname = $col->getName();
 					echo '<tr>';
-					echo "<td>$colname is </td>";
+					echo '<td>' . $col->getLabel() . '</td>';
 					echo "<td><select name=$colname" . '_op>';
 					foreach ($operators as [$op, $label]) {
 						echo "<option value='$op'>$label</option>";
