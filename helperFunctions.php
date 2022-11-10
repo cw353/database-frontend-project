@@ -6,9 +6,9 @@
 			return mysqli_real_escape_string($mysqli, $input);	
 	}
 
-	/* sanitize a string for use in html */
-	function sanitizeHtml(string $input) {
-			return htmlspecialchars($input);	
+	/* sanitize a string for use in html (returns empty string if empty) */
+	function sanitizeHtml(?string $input) {
+			return empty($input) ? '' : htmlspecialchars($input);	
 	}
 
 	/* formulate a select query for the specified table object */
