@@ -2,8 +2,8 @@
 	require_once('dbClasses.php');
 
 	/* sanitize a string for use in mysql */
-	function sanitizeMysql(string $input) {
-			return mysql_real_escape_string($input);	
+	function sanitizeSql(mysqli $mysqli, string $input) {
+			return mysqli_real_escape_string($mysqli, $input);	
 	}
 
 	/* sanitize a string for use in html */
@@ -18,10 +18,7 @@
 		$numcols = sizeof($columns);
 		for ($i = 0; $i < $numcols; $i++) {
 			if ($i > 0) $query .= ', ';
-			$sqlExpression = $columns[$i]->getSqlExpression();
-			$query .= $sqlExpression
-				? "$sqlExpression as " . $columns[$i]->getName()
-				: $columns[$i]->getName();
+			$query .= $columns[$i]->getSqlExpressionWithAlias();
 		}
 		$query .= ' from ' . $table->getName();
 		if (!empty($filters)) {

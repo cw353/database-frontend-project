@@ -1,6 +1,5 @@
 <?php
 	require_once 'helperFunctions.php';
-	require_once 'dbClasses.php';
 	require_once 'tables.php';
 
 	$con = new mysqli('localhost', 'root', 'root', 'project');
@@ -13,10 +12,11 @@
 		if (!empty($_GET[$colname])) {
 			$op = $_GET[$colname.'_op'];
 			$comparand = (($op === 'like' or $op === 'ends') ? '%' : '')
-				. $_GET[$colname]
+				. sanitizeSql($con, $_GET[$colname])
 				. (($op === 'like' or $op === 'starts') ? '%' : '');
 			$sql_op = ($op === 'starts' or $op === 'ends') ? 'like' : $op;
-			$filter = "$colname $sql_op '$comparand'";
+			$col_expr = $col->getSqlExpression();
+			$filter = "$col_expr $sql_op '$comparand'";
 			array_push($filters, $filter);
 		}
 	}

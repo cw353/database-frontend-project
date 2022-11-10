@@ -35,7 +35,14 @@
 			return $this->sourceTableName;
 		}
 		function getSqlExpression() {
-			return $this->sqlExpression;
+			return $this->sqlExpression === null
+				? $this->name
+				: $this->sqlExpression;
+		}
+		function getSqlExpressionWithAlias() {
+			return $this->sqlExpression === null
+				? $this->name
+				: "$this->sqlExpression as $this->name";
 		}
 	}
 ?>
