@@ -14,15 +14,13 @@
 		$colname = $col->getName();
 		// add to filters only if comparand was provided
 		if (!empty($_GET[$colname])) {
-			$op = $_GET[$colname.'_op']; // operator info
+			// operator info (if none provided, assume default case 'e')
+			$op = isset($_GET[$colname.'_op']) ? $_GET[$colname.'_op'] : 'e';
 			// comparand
 			$comparand = (($op === 'c' or $op === 'end') ? '%' : '')
 				. $_GET[$colname]
 				. (($op === 'c' or $op === 'start') ? '%' : '');
-			// sql operator
-			$sql_op = empty($op)
-				? '='
-				: $operators[$op]['op'];
+			$sql_op = $operators[$op]['op']; // sql operator
 			$attr = $col->getSqlExpression(); // attribute
 			// build expression from attribute and operator with ? placeholder for var
 			$expr = "$attr $sql_op ?";

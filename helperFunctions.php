@@ -31,6 +31,6 @@
 	function getForeignKeyLink(string $val, array $foreignKeyInfo) {
 		$table = $foreignKeyInfo['table'];
 		$field = $foreignKeyInfo['field'];
-		return "<a href='viewFilteredRecords.php?table_to_query=$table&$field=$val'>$val</a>";
+		return "<a href='viewFilteredRecords.php?table_to_query=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
 ?>
