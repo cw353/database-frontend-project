@@ -6,19 +6,21 @@
 	$con = new mysqli('localhost', 'root', 'root', 'project');
 	$table_to_query = $_GET['table_to_query'];
 	$table = $tables[$table_to_query];
+
 	$filters = [];
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
 		if (!empty($_GET[$colname])) {
-			$comparand = $_GET[$colname];
 			$op = $_GET[$colname.'_op'];
-			$startwild = ($op === 'like' or $op === 'ends') ? '%' : '';
-			$endwild = ($op === 'like' or $op === 'starts') ? '%' : '';
+			$comparand = (($op === 'like' or $op === 'ends') ? '%' : '')
+				. $_GET[$colname]
+				. (($op === 'like' or $op === 'starts') ? '%' : '');
 			$sql_op = ($op === 'starts' or $op === 'ends') ? 'like' : $op;
-			$filter = "$colname $sql_op '$startwild$comparand$endwild'";
+			$filter = "$colname $sql_op '$comparand'";
 			array_push($filters, $filter);
 		}
 	}
+
 	$query = formulateSelectQuery($table, $filters);
 	echo $query;
 	$result = $con->query($query);
