@@ -14,7 +14,9 @@
 			$comparand = (($op === 'like' or $op === 'ends') ? '%' : '')
 				. sanitizeSql($con, $_GET[$colname])
 				. (($op === 'like' or $op === 'starts') ? '%' : '');
-			$sql_op = ($op === 'starts' or $op === 'ends') ? 'like' : $op;
+			$sql_op = empty($op)
+				? '='
+				: ($op === 'starts' or $op === 'ends') ? 'like' : $op;
 			$col_expr = $col->getSqlExpression();
 			$filter = "$col_expr $sql_op '$comparand'";
 			array_push($filters, $filter);
@@ -54,7 +56,11 @@
 					while ($record = $result->fetch_assoc()) {
 						echo '<tr>';
 						foreach ($table->getColumns() as $col) {
-							echo '<td>' . $record[$col->getName()] . '</td>';
+							$val = $record[$col->getName()];
+							$foreignKeyInfo = $col->getForeignKeyInfo();
+							echo '<td>';
+							echo empty($foreignKeyInfo) ? $val : getForeignKeyLink($val, $foreignKeyInfo);
+							echo '</td>';
 						}
 						echo '</tr>';
 					}
@@ -73,6 +79,6 @@
 </html>
 
 <?php
-	$result->free();
-	$con->close();
+	$result && $result->free();
+	$con && $con->close();
 ?>

@@ -18,11 +18,11 @@
 	}
 
 	class Column {
-		private $name, $label, $sourceTableName, $sqlExpression;
-		function __construct(string $name, string $label, string $sourceTableName, string $sqlExpression = null) {
+		private $name, $label, $foreignKeyInfo, $sqlExpression;
+		function __construct(string $name, string $label, array $foreignKeyInfo = null, string $sqlExpression = null) {
 			$this->name = $name;
 			$this->label = $label;
-			$this->sourceTableName = $sourceTableName;
+			$this->foreignKeyInfo = $foreignKeyInfo;
 			$this->sqlExpression = $sqlExpression;
 		}
 		function getName() {
@@ -31,8 +31,8 @@
 		function getLabel() {
 			return $this->label;
 		}
-		function getSourceTableName() {
-			return $this->sourceTableName;
+		function getForeignKeyInfo() {
+			return $this->foreignKeyInfo;
 		}
 		function getSqlExpression() {
 			return $this->sqlExpression === null

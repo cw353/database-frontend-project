@@ -26,4 +26,11 @@
 		}
 		return $query;
 	}
+
+	/* get a hyperlink to display for a foreign key value */
+	function getForeignKeyLink(string $val, array $foreignKeyInfo) {
+		$table = $foreignKeyInfo['table'];
+		$field = $foreignKeyInfo['field'];
+		return "<a href='viewFilteredRecords.php?table_to_query=$table&$field=$val'>$val</a>";
+	}
 ?>
