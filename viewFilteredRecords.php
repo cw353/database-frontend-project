@@ -10,7 +10,13 @@
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
 		if (!empty($_GET[$colname])) {
-			array_push($filters, $colname . "='" . $_GET[$colname] . "'");
+			$comparand = $_GET[$colname];
+			$op = $_GET[$colname.'_op'];
+			$startwild = ($op === 'like' or $op === 'ends') ? '%' : '';
+			$endwild = ($op === 'like' or $op === 'starts') ? '%' : '';
+			$sql_op = ($op === 'starts' or $op === 'ends') ? 'like' : $op;
+			$filter = "$colname $sql_op '$startwild$comparand$endwild'";
+			array_push($filters, $filter);
 		}
 	}
 	$query = formulateSelectQuery($table, $filters);

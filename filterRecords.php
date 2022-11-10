@@ -18,14 +18,34 @@
 		<header><?php echo 'Filter Records for ' . $table->getLabel() ?></header>
 		<form method="get" action="viewFilteredRecords.php">
 			<input type="hidden" name="table_to_query" value="<?php echo $table_to_query; ?>">
+			<table border='1'>
+				<tr>
+					<th>Field</th>
+					<th>Operator</th>
+					<th>Comparand</th>
+				</tr>
 			<?php
+				$operators = [
+					['=',  'is'],
+					['<',  'is less than'], ['>',  'is greater than'],
+					['starts', 'starts with'],
+					['ends', 'ends with'],
+					['like',  'contains'],
+				];
 				foreach ($table->getColumns() as $col) {
 					$colname = $col->getName();
-					echo "<label>$colname is ";
-					echo "<input type='text' name='$colname'>";
-					echo '</label><br>';
+					echo '<tr>';
+					echo "<td>$colname is </td>";
+					echo "<td><select name=$colname" . '_op>';
+					foreach ($operators as [$op, $label]) {
+						echo "<option value='$op'>$label</option>";
+					}
+					echo '</select></td>';
+					echo "<td><input type='text' name='$colname'></td>";
+					echo '</tr>';
 				}
 			?>
+			</table>
 			<button type="submit">Apply Filter</button>
 		</form>
 
