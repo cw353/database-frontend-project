@@ -54,38 +54,10 @@
 	</head>
 
 	<body>
+
 		<?php
-			if (!$result) {
-				echo "<p>An error occurred while trying to process your query.</p>";
-			} else {
-				echo "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
-			}
+			echo getResultTable($result, $table);
 		?>
-		<?php if ($result && $result->num_rows > 0): ?>
-			<table border='1'>
-				<caption><?php echo $table->getLabel() ?></caption>
-				<tr>
-					<?php
-						foreach ($table->getColumns() as $col) {
-							echo '<th>' . $col->getLabel() . '</th>';
-						}
-					?>
-				</tr>
-				<?php
-					while ($record = $result->fetch_assoc()) {
-						echo '<tr>';
-						foreach ($table->getColumns() as $col) {
-							$val = sanitizeHtml($record[$col->getName()]);
-							$foreignKeyInfo = $col->getForeignKeyInfo();
-							echo '<td>';
-							echo empty($foreignKeyInfo) ? $val : getForeignKeyLink($val, $foreignKeyInfo);
-							echo '</td>';
-						}
-						echo '</tr>';
-					}
-				?>
-			</table>
-		<?php endif; ?>
 
 		<br>
 

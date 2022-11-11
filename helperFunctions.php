@@ -33,4 +33,35 @@
 		$field = $foreignKeyInfo['field'];
 		return "<a href='viewFilteredRecords.php?table_to_query=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
+
+	function getResultTable(mysqli_result $result, Table $table) {
+		$toReturn = '';
+		if (!$result) {
+		 $toReturn .= "<p>An error occurred while trying to process your query.</p>";
+		} else {
+		 $toReturn .= "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
+		}
+		if ($result && $result->num_rows > 0) {
+			$toReturn .= "<table border='1'>";
+			$toReturn .= '<caption>' . $table->getLabel() . '</caption>';
+			$toReturn .= '<tr>';
+			foreach ($table->getColumns() as $col) {
+				$toReturn .= '<th>' . $col->getLabel() . '</th>';
+			}
+			$toReturn .= '</tr>';
+			while ($record = $result->fetch_assoc()) {
+				$toReturn .= '<tr>';
+				foreach ($table->getColumns() as $col) {
+					$val = sanitizeHtml($record[$col->getName()]);
+					$foreignKeyInfo = $col->getForeignKeyInfo();
+					$toReturn .= '<td>';
+					$toReturn .= empty($foreignKeyInfo) ? $val : getForeignKeyLink($val, $foreignKeyInfo);
+					$toReturn .= '</td>';
+				}
+				$toReturn .= '</tr>';
+			}
+			$toReturn .= '</table>';
+		}
+		return $toReturn;
+	}
 ?>
