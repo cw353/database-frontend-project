@@ -1,10 +1,10 @@
 <?php
 	class Table {
 		private $name, $label, $columns;
-		function __construct(string $name, string $label, array $primaryKey, array $columns) {
+		function __construct(string $name, string $label, array $primaryKeys, array $columns) {
 			$this->name = $name;
 			$this->label = $label;
-			$this->primaryKey = $primaryKey;
+			$this->primaryKeys = $primaryKeys;
 			$this->columns = $columns;
 		}
 		function getName() {
