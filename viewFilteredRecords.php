@@ -9,7 +9,7 @@
 
 	$filter_expr = []; // filter expressions
 	$filter_var = []; // comparands to bind for filters
-	$types = ''; // types of variables to bind for filters
+	$filter_types = ''; // types of variables to bind for filters
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
 		// add to filters only if comparand was provided
@@ -26,24 +26,12 @@
 			$expr = "$attr $sql_op ?";
 			array_push($filter_expr, $expr);
 			array_push($filter_var, $comparand);
-			$types .= 's';
+			$filter_types .= 's';
 		}
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
-
-	$result = null;
-	$stmt = null;
-	if (sizeof($filter_expr) > 0) {
-		// use prepared statements if filtering data
-		$stmt = $mysqli->prepare($query);
-		$stmt->bind_param($types, ...$filter_var);
-		$stmt->execute();
-		$result = $stmt->get_result();
-	} else {
-		// otherwise, use regular query
-		$result = $mysqli->query($query);
-	}
+	$result = getQueryResult($mysqli, $query, $filter_expr, $filter_var, $filter_types);
 
 ?>
 
@@ -71,6 +59,5 @@
 
 <?php
 	$result && $result->free();
-	$stmt && $stmt->close();
 	$mysqli && $mysqli->close();
 ?>

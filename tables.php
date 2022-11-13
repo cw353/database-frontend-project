@@ -7,7 +7,7 @@
       new Column('driverid', 'ID'),
       new Column('driverlicenseno', 'License #'),
       new Column('drivername', 'Name'),
-      new Column('bonus', 'Bonus', null, 'ifnull(bonus, 0)'),
+      new Column('bonus', 'Bonus', null, 'ifnull(bonus, 0.0)'),
     ]),
 		'truck' => new Table('truck', 'Trucks', ['truckid'], [
 			new Column('truckid', 'ID'),

@@ -34,6 +34,23 @@
 		return "<a href='viewFilteredRecords.php?table_to_query=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
 
+	/* precondition: if $filter_expr is not null, then $filter_var and $filter_types should not be null either and should contain the same number of values as $filter_expr (array of strings for the former, array of chars for the latter) */
+	function getQueryResult(mysqli $mysqli, string $query, ?array $filter_expr, ?array $filter_var, ?string $filter_types) {
+		// if filtering data, use prepared statement
+	  if ($filter_expr && sizeof($filter_expr) > 0) {
+    	$stmt = $mysqli->prepare($query);
+    	$stmt->bind_param($filter_types, ...$filter_var);
+    	$stmt->execute();
+    	$result = $stmt->get_result();
+    	$stmt && $stmt->close();
+  	} else {
+    	// otherwise, use regular query
+    	$result = $mysqli->query($query);
+		}
+		return $result;
+	}
+
+
 	function getResultTable(mysqli_result $result, Table $table) {
 		$toReturn = '';
 		if (!$result) {
