@@ -14,7 +14,7 @@
 			<select name="table_to_query">
 				<?php
 					foreach ($tables as $key=>$value) {
-						echo "<option value=$key>" . $value->getLabel() . "</option>";
+						echo "<option value='$key'>" . $value->getLabel() . "</option>";
 					}
 				?>
 			</select>

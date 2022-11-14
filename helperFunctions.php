@@ -28,9 +28,9 @@
 	}
 
 	/* get a hyperlink to display for a foreign key value */
-	function getForeignKeyLink(string $val, array $foreignKeyInfo) {
-		$table = $foreignKeyInfo['table'];
-		$field = $foreignKeyInfo['field'];
+	function getForeignKeyLink(string $val, ForeignKeyInfo $foreignKeyInfo) {
+		$table = $foreignKeyInfo->getTable();
+		$field = $foreignKeyInfo->getField();
 		return "<a href='viewFilteredRecords.php?table_to_query=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
 
@@ -82,25 +82,29 @@
 		return $toReturn;
 	}
 
-	function getForeignKeyDropdown(ForeignKeyInfo $foreignKeyInfo, mysqli $mysqli, string $value = null) {
+	function getForeignKeyDropdown(ForeignKeyInfo $foreignKeyInfo, mysqli $mysqli, string $value = null, string $selectname) {
 		$table = $foreignKeyInfo->getTable();
 		$field = $foreignKeyInfo->getField();
 		$result = getQueryResult($mysqli, "select $field from $table");
-		$toReturn = '';
+		$toReturn = "<select name='$selectname'>";
 		while ($result && $record = $result->fetch_assoc()) {
-			$toReturn .= $record[$field] . ', ';
+			$option = $record[$field];
+			$toReturn .= "<option value='$option'";
+			if (strval($option) === strval($value)) { $toReturn .= " selected"; }
+			$toReturn .= ">$option</option>";
 		}
+		$toReturn .= '</select>';
 		return $toReturn;
-		//return "FK for table $table, column $field with value $value";
 	}
 
 	function getModifiableTable(Table $table, mysqli $mysqli, array $record = null) {
 		$toReturn = '<table><tr><th>Field</th><th>Value</th></tr>';
 		foreach ($table->getColumns() as $col) {
 			$colname = $col->getName();
-			$toReturn .= '<tr><td>' . $col->getLabel() . '</td><td>';
+			$collabel = $col->getLabel();
+			$toReturn .= "<tr><td>$collabel</td><td>";
 			if ($fkInfo = $col->getForeignKeyInfo()) {
-				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record[$colname]);
+				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record[$colname], $collabel);
 			} else {
 				$toReturn .= "<input type='text' name='$colname'";
 				if ($record) { $toReturn .= " value='" . $record[$colname] . "'"; }
