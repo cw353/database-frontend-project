@@ -14,8 +14,8 @@
 			new Column('lpstate', 'License Plate State'),
 			new Column('lpnumber', 'License Plate Number'),
 			new Column('truckmodel', 'Model'),
-			new Column('driverid', 'Driver ID', array('table' => 'driver', 'field' => 'driverid')),
-			new Column('ownerid', 'Owner ID', array('table' => 'driver', 'field' => 'driverid')),
+			new Column('driverid', 'Driver ID', new ForeignKeyInfo('driver', 'driverid')),
+			new Column('ownerid', 'Owner ID', new ForeignKeyInfo('driver', 'driverid')),
 		]),
 		'repairtechnician' => new Table('repairtechnician', 'Repair Technicians', ['rtid'], [
       new Column('rtid', 'ID'), 
@@ -24,11 +24,11 @@
 			new Column('rtlname', 'Last Name'),
 		]),
 		'repaircollaboration' => new Table('repaircollaboration', 'Repair Collaborations', ['rt1id', 'rt2id'], [
-			new Column('rt1id', 'Repair Technician 1 ID', array('table' => 'repairtechnician', 'field' => 'rtid')),
-			new Column('rt2id', 'Repair Technician 2 ID', array('table' => 'repairtechnician', 'field' => 'rtid')),
+			new Column('rt1id', 'Repair Technician 1 ID', new ForeignKeyInfo('repairtechnician', 'rtid')),
+			new Column('rt2id', 'Repair Technician 2 ID', new ForeignKeyInfo('repairtechnician', 'rtid')),
 		]),
 		'shift' => new Table('shift', 'Shifts', ['driverid', 'shiftstart'], [
-      new Column('driverid', 'Driver ID', array('table' => 'driver', 'field' => 'driverid')), 
+      new Column('driverid', 'Driver ID', new ForeignKeyInfo('driver', 'driverid')), 
 			new Column('shiftstart_date', 'Shift Start Date', null, 'date(shiftstart)'),
 			new Column('shiftstart_time', 'Shift Start Time', null, 'time(shiftstart)'),
 			new Column('shiftend_date', 'Shift End Date', null, 'date(shiftend)'),
@@ -37,8 +37,8 @@
 			new Column('hourlypay', 'Hourly Pay'),
 		]),
     'truckrepairs' => new Table('truckrepairs', 'Truck Repairs', ['rtid','truckid'], [
-      new Column('rtid', 'Repair Technician ID', array('table' => 'repairtechnician', 'field' => 'rtid')),
-      new Column('truckid', 'Truck ID', array('table' => 'truck', 'field' => 'truckid')),
+      new Column('rtid', 'Repair Technician ID', new ForeignKeyInfo('repairtechnician', 'rtid')),
+      new Column('truckid', 'Truck ID', new ForeignKeyInfo('truck', 'truckid')),
       new Column('repaircost', 'Repair Cost'),
     ]),
 		'region' => new Table('region', 'Regions', ['regionid'], [
@@ -46,16 +46,16 @@
 			new Column('regionname', 'Name'),
 		]),
 		'truckservice' => new Table('truckservice', 'Truck Service', ['truckid', 'regionid'], [
-			new Column('truckid', 'Truck ID', array('table' => 'truck', 'field' => 'truckid')),
-			new Column('regionid', 'Region ID', array('table' => 'region', 'field' => 'regionid')),
+			new Column('truckid', 'Truck ID', new ForeignKeyInfo('truck', 'truckid')),
+			new Column('regionid', 'Region ID', new ForeignKeyInfo('region', 'regionid')),
 		]),
 		'repairequipment' => new Table('repairequipment', 'Repair Equipment', ['equipmentid'], [
 			new Column('equipmentid', 'ID'),
 			new Column('equipmentname', 'Name'),
 		]),
 		'equipmentusage' => new Table('equipmentusage', 'Equipment Usage', ['rtid', 'equipmentid'], [
-      new Column('rtid', 'Repair Technician ID', array('table' => 'repairtechnician', 'field' => 'rtid')),
-			new Column('equipmentid', 'Equipment ID', array('table' => 'repairequipment', 'field' => 'equipmentid')),
+      new Column('rtid', 'Repair Technician ID', new ForeignKeyInfo('repairtechnician', 'rtid')),
+			new Column('equipmentid', 'Equipment ID', new ForeignKeyInfo('repairequipment', 'equipmentid')),
 		]),
 		'product' => new Table('product', 'Products', ['productid'], [
 			new Column('productid', 'ID'),
@@ -66,13 +66,13 @@
 			new Column('suppliername', 'Name'),
 		]),
 		'supplierphone' => new Table('supplierphone', 'Supplier Phone Numbers', ['supplierid', 'supplierphone'], [
-			new Column('supplierid', 'Supplier ID', array('table' => 'supplier', 'field' => 'supplierid')),
+			new Column('supplierid', 'Supplier ID', new ForeignKeyInfo('supplier', 'supplierid')),
 			new Column('supplierphone', 'Phone Number'),
 		]),
 		'delivery' => new Table('delivery', 'Deliveries', ['regionid', 'productid', 'supplierid'], [
-			new Column('regionid', 'Region ID', array('table' => 'region', 'field' => 'regionid')),
-			new Column('productid', 'Product ID', array('table' => 'product', 'field' => 'productid')),
-			new Column('supplierid', 'Supplier ID', array('table' => 'supplier', 'field' => 'supplierid')),
+			new Column('regionid', 'Region ID', new ForeignKeyInfo('region', 'regionid')),
+			new Column('productid', 'Product ID', new ForeignKeyInfo('product', 'productid')),
+			new Column('supplierid', 'Supplier ID', new ForeignKeyInfo('supplier', 'supplierid')),
 		]),
   );
 ?>

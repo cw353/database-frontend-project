@@ -34,10 +34,10 @@
 		return "<a href='viewFilteredRecords.php?table_to_query=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
 
-	/* precondition: if $filter_expr is not null, then $filter_var and $filter_types should not be null either and should contain the same number of values as $filter_expr (array of strings for the former, array of chars for the latter) */
-	function getQueryResult(mysqli $mysqli, string $query, ?array $filter_expr, ?array $filter_var, ?string $filter_types) {
+	/* precondition: if $filter_var is not null, then $filter_types should not be null either and should contain the same number of chars as $filter_var contains values */
+	function getQueryResult(mysqli $mysqli, string $query, array $filter_var = null, string $filter_types = null) {
 		// if filtering data, use prepared statement
-	  if ($filter_expr && sizeof($filter_expr) > 0) {
+	  if ($filter_var && sizeof($filter_var) > 0) {
     	$stmt = $mysqli->prepare($query);
     	$stmt->bind_param($filter_types, ...$filter_var);
     	$stmt->execute();
@@ -82,14 +82,32 @@
 		return $toReturn;
 	}
 
-	function getModifiableTable(Table $table, array $record = null) {
+	function getForeignKeyDropdown(ForeignKeyInfo $foreignKeyInfo, mysqli $mysqli, string $value = null) {
+		$table = $foreignKeyInfo->getTable();
+		$field = $foreignKeyInfo->getField();
+		$result = getQueryResult($mysqli, "select $field from $table");
+		$toReturn = '';
+		while ($result && $record = $result->fetch_assoc()) {
+			$toReturn .= $record[$field] . ', ';
+		}
+		return $toReturn;
+		//return "FK for table $table, column $field with value $value";
+	}
+
+	function getModifiableTable(Table $table, mysqli $mysqli, array $record = null) {
 		$toReturn = '<table><tr><th>Field</th><th>Value</th></tr>';
 		foreach ($table->getColumns() as $col) {
 			$colname = $col->getName();
-			$toReturn .= '<tr><td>' . $col->getLabel() . '</td>';
-			$toReturn .= "<td><input type='text' name='$colname'";
-			if ($record) { $toReturn .= " value='" . $record[$colname] . "'"; }
-			$toReturn .= '></td></tr>';
+			$toReturn .= '<tr><td>' . $col->getLabel() . '</td><td>';
+			if ($fkInfo = $col->getForeignKeyInfo()) {
+				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record[$colname]);
+			} else {
+				$toReturn .= "<input type='text' name='$colname'";
+				if ($record) { $toReturn .= " value='" . $record[$colname] . "'"; }
+				$toReturn .= '/>';
+			}
+			$toReturn .= '</td></tr>';
+		
 		}
 		$toReturn .= '</table>';
 		return $toReturn;

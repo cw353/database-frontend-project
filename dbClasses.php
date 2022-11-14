@@ -23,7 +23,7 @@
 
 	class Column {
 		private $name, $label, $foreignKeyInfo, $sqlExpression;
-		function __construct(string $name, string $label, array $foreignKeyInfo = null, string $sqlExpression = null) {
+		function __construct(string $name, string $label, ForeignKeyInfo $foreignKeyInfo = null, string $sqlExpression = null) {
 			$this->name = $name;
 			$this->label = $label;
 			$this->foreignKeyInfo = $foreignKeyInfo;
@@ -49,4 +49,19 @@
 				: "$this->sqlExpression as $this->name";
 		}
 	}
+
+	class ForeignKeyInfo {
+		private $table, $field;
+		function __construct(string $table, string $field) {
+			$this->table = $table;
+			$this->field = $field;
+		}
+		function getTable() {
+			return $this->table;
+		}
+		function getField() {
+			return $this->field;
+		}
+	}
+
 ?>

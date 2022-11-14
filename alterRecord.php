@@ -21,7 +21,7 @@
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
-	$result = getQueryResult($mysqli, $query, $filter_expr, $filter_var, $filter_types);
+	$result = getQueryResult($mysqli, $query, $filter_var, $filter_types);
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +39,7 @@
 			<form method="" action="">
 				<input type="hidden" name="table_to_query" value="<?php echo $table_to_query; ?>">
 				<?php
-					echo getModifiableTable($table, $result->fetch_assoc());
+					echo getModifiableTable($table, $mysqli, $result->fetch_assoc());
 				?>
 				<button type="submit">Apply Changes</button>
 			</form>
