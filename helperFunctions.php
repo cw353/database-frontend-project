@@ -81,4 +81,18 @@
 		}
 		return $toReturn;
 	}
+
+	function getModifiableTable(Table $table, array $record = null) {
+		$toReturn = '<table><tr><th>Field</th><th>Value</th></tr>';
+		foreach ($table->getColumns() as $col) {
+			$colname = $col->getName();
+			$toReturn .= '<tr><td>' . $col->getLabel() . '</td>';
+			$toReturn .= "<td><input type='text' name='$colname'";
+			if ($record) { $toReturn .= " value='" . $record[$colname] . "'"; }
+			$toReturn .= '></td></tr>';
+		}
+		$toReturn .= '</table>';
+		return $toReturn;
+	}
+
 ?>

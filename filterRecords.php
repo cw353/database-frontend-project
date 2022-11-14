@@ -19,7 +19,7 @@
 		<header><?php echo 'Filter Records for ' . $table->getLabel() ?></header>
 		<form method="get" action="viewFilteredRecords.php">
 			<input type="hidden" name="table_to_query" value="<?php echo $table_to_query; ?>">
-			<table border='1'>
+			<table>
 				<tr>
 					<th>Field</th>
 					<th>Operator</th>
