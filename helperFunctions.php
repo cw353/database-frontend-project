@@ -2,15 +2,16 @@
 
 <?php
 	require_once('dbClasses.php');
+	require_once('helperFunctions.php');
 
 	/* sanitize a string for use in mysql */
-	function sanitizeSql(mysqli $mysqli, string $input) {
+	function sanitizeMysql(mysqli $mysqli, string $input) {
 			return mysqli_real_escape_string($mysqli, $input);	
 	}
 
 	/* sanitize a string for use in html (returns empty string if empty) */
-	function sanitizeHtml(?string $input) {
-			return empty($input) ? '' : htmlspecialchars($input);	
+	function sanitizeHtml(string $input) {
+			return empty($input) ? '' : htmlspecialchars($input, ENT_QUOTES);	
 	}
 
 	/* formulate a select query for the specified table object */
@@ -33,7 +34,7 @@
 	function getForeignKeyLink(string $val, ForeignKeyInfo $foreignKeyInfo) {
 		$table = $foreignKeyInfo->getTable();
 		$field = $foreignKeyInfo->getField();
-		return "<a href='viewFilteredRecords.php?table_to_query=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
+		return "<a href='viewFilteredRecords.php?table=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
 
 	/* precondition: if $filter_var is not null, then $filter_types should not be null either and should contain the same number of chars as $filter_var contains values */
@@ -55,9 +56,9 @@
 	function getModifyLink(Table $table, array $record) {
 		$params = '';
 		foreach($table->getPrimaryKeys() as $pk) {
-			$params .= "&$pk=" . $record[$pk];
+			$params .= '&' . sanitizeHtml($pk) . '=' . sanitizeHtml($record[$pk]);
 		}
-		return "<a href='modifyRecord.php?table_to_query=" . $table->getName() . "$params'>Modify Record</a>";
+		return "<a href='modifyRecord.php?table=" . sanitizeHtml($table->getName()) . "$params'>Modify Record</a>";
 	}
 
 	function getResultTable(mysqli_result $result, Table $table) {
@@ -69,10 +70,10 @@
 		}
 		if ($result && $result->num_rows > 0) {
 			$toReturn .= "<table>";
-			$toReturn .= '<caption>' . $table->getLabel() . '</caption>';
+			$toReturn .= '<caption>' . sanitizeHtml($table->getLabel()) . '</caption>';
 			$toReturn .= '<tr>';
 			foreach ($table->getColumns() as $col) {
-				$toReturn .= '<th>' . $col->getLabel() . '</th>';
+				$toReturn .= '<th>' . sanitizeHtml($col->getLabel()) . '</th>';
 			}
 			$toReturn .= '<th>Actions</th></tr>';
 			while ($record = $result->fetch_assoc()) {
@@ -96,11 +97,11 @@
 		$table = $foreignKeyInfo->getTable();
 		$field = $foreignKeyInfo->getField();
 		$result = getQueryResult($mysqli, "select $field from $table order by $field");
-		$toReturn = "<select name='$selectname'>";
+		$toReturn = "<select name='" . sanitizeHtml($selectname) . "'>";
 		while ($result && $record = $result->fetch_assoc()) {
-			$option = $record[$field];
+			$option = sanitizeHtml($record[$field]);
 			$toReturn .= "<option value='$option'";
-			if (strval($option) === strval($value)) { $toReturn .= " selected"; }
+			if (strval($option) === sanitizeHtml(strval($value))) { $toReturn .= " selected"; }
 			$toReturn .= ">$option</option>";
 		}
 		$toReturn .= '</select>';
@@ -111,17 +112,17 @@
 		$toReturn = '<table><tr><th>Field</th><th>Value</th></tr>';
 		if (!empty($record)) {
 			foreach($table->getPrimaryKeys() as $pk) {
-				$toReturn .= "<input type='hidden' name='$pk" . "_old' value='" . $record[$pk] . "'>";
+				$toReturn .= "<input type='hidden' name='" . sanitizeHtml($pk.'_old') . "' value='" . sanitizeHtml($record[$pk]) . "'>";
 			}
 		}
 		foreach ($table->getColumns() as $col) {
-			$colname = $col->getName();
-			$toReturn .= "<tr><td>" . $col->getLabel() ."</td><td>";
+			$colname = sanitizeHtml($col->getName());
+			$toReturn .= "<tr><td>" . sanitizeHtml($col->getLabel()) ."</td><td>";
 			if ($fkInfo = $col->getForeignKeyInfo()) {
 				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $colname);
 			} else {
 				$toReturn .= "<input type='text' name='$colname'";
-				if ($record) { $toReturn .= " value='" . $record[$colname] . "'"; }
+				if ($record) { $toReturn .= " value='" . sanitizeHtml($record[$colname]) . "'"; }
 				$toReturn .= '/>';
 			}
 			$toReturn .= '</td></tr>';

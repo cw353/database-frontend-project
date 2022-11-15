@@ -2,6 +2,7 @@
 
 <?php
 	require_once 'tables.php';
+	require_once 'helperFunctions.php';
 ?>
 
 <!DOCTYPE html>
@@ -13,10 +14,10 @@
 	<body>
 		<header>Choose a table for which to view records.</header>
 		<form method="get" action="filterRecords.php">
-			<select name="table_to_query">
+			<select name="table">
 				<?php
 					foreach ($tables as $key=>$value) {
-						echo "<option value='$key'>" . $value->getLabel() . "</option>";
+						echo "<option value='" . sanitizeHtml($key) . "'>" . sanitizeHtml($value->getLabel()) . "</option>";
 					}
 				?>
 			</select>

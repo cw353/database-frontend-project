@@ -6,8 +6,8 @@
 	require_once 'tables.php';
 	require_once 'operators.php';
 
-	$table_to_query = $_GET['table_to_query'];
-	$table = $tables[$table_to_query];
+	$tablename = $_GET['table'];
+	$table = $tables[$tablename];
 
 ?>
 
@@ -18,9 +18,9 @@
 	</head>
 
 	<body>
-		<header><?php echo 'Filter Records for ' . $table->getLabel() ?></header>
+		<header><?php echo 'Filter Records for ' . sanitizeHtml($table->getLabel()) ?></header>
 		<form method="get" action="viewFilteredRecords.php">
-			<input type="hidden" name="table_to_query" value="<?php echo $table_to_query; ?>">
+			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<table>
 				<tr>
 					<th>Field</th>
@@ -29,12 +29,12 @@
 				</tr>
 			<?php
 				foreach ($table->getColumns() as $col) {
-					$colname = $col->getName();
+					$colname = sanitizeHtml($col->getName());
 					echo '<tr>';
-					echo '<td>' . $col->getLabel() . '</td>';
+					echo '<td>' . sanitizeHtml($col->getLabel()) . '</td>';
 					echo "<td><select name=$colname" . '_op>';
 					foreach ($operators as $key=>$val) {
-						echo "<option value='$key'>" . $val['label'] . '</option>';
+						echo "<option value='" . sanitizeHtml($key) . "'>" . sanitizeHtml($val['label']) . '</option>';
 					}
 					echo '</select></td>';
 					echo "<td><input type='text' name='$colname'></td>";

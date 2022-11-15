@@ -6,8 +6,8 @@
 	require_once 'operators.php';
 
 	$mysqli = new mysqli('localhost', 'root', 'root', 'project');
-	$table_to_query = $_GET['table_to_query'];
-	$table = $tables[$table_to_query];
+	$tablename = $_GET['table'];
+	$table = $tables[$tablename];
 
 	$filter_expr = []; // filter expressions
 	$filter_var = []; // comparands to bind for filters
@@ -38,8 +38,8 @@
 		<?php elseif ($result && $result->num_rows < 1): ?>
 			<p>No records matching your query were found.</p>
 		<?php else: ?>
-			<form method="get" action="applyRecordModifications.php">
-				<input type="hidden" name="table_to_query" value="<?php echo $table_to_query; ?>">
+			<form method="get" action="executeModifyRecord.php">
+				<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 				<?php
 					echo getModifiableTable($table, $mysqli, $result->fetch_assoc());
 				?>

@@ -6,8 +6,8 @@
 	require_once 'operators.php';
 
 	$mysqli = new mysqli('localhost', 'root', 'root', 'project');
-	$table_to_query = $_GET['table_to_query'];
-	$table = $tables[$table_to_query];
+	$tablename = $_GET['table'];
+	$table = $tables[$tablename];
 
 	$filter_expr = []; // filter expressions
 	$filter_var = []; // comparands to bind for filters
