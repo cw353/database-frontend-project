@@ -85,7 +85,7 @@
 	function getForeignKeyDropdown(ForeignKeyInfo $foreignKeyInfo, mysqli $mysqli, string $value = null, string $selectname) {
 		$table = $foreignKeyInfo->getTable();
 		$field = $foreignKeyInfo->getField();
-		$result = getQueryResult($mysqli, "select $field from $table");
+		$result = getQueryResult($mysqli, "select $field from $table order by $field");
 		$toReturn = "<select name='$selectname'>";
 		while ($result && $record = $result->fetch_assoc()) {
 			$option = $record[$field];
@@ -104,7 +104,7 @@
 			$collabel = $col->getLabel();
 			$toReturn .= "<tr><td>$collabel</td><td>";
 			if ($fkInfo = $col->getForeignKeyInfo()) {
-				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record[$colname], $collabel);
+				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $collabel);
 			} else {
 				$toReturn .= "<input type='text' name='$colname'";
 				if ($record) { $toReturn .= " value='" . $record[$colname] . "'"; }
