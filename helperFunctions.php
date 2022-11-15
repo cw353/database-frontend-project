@@ -52,6 +52,13 @@
 		return $result;
 	}
 
+	function getModifyLink(Table $table, array $record) {
+		$params = '';
+		foreach($table->getPrimaryKeys() as $pk) {
+			$params .= "&$pk=" . $record[$pk];
+		}
+		return "<a href='alterRecord.php?table_to_query=" . $table->getName() . "$params'>Modify Record</a>";
+	}
 
 	function getResultTable(mysqli_result $result, Table $table) {
 		$toReturn = '';
@@ -61,13 +68,13 @@
 		 $toReturn .= "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
 		}
 		if ($result && $result->num_rows > 0) {
-			$toReturn .= "<table border='1'>";
+			$toReturn .= "<table>";
 			$toReturn .= '<caption>' . $table->getLabel() . '</caption>';
 			$toReturn .= '<tr>';
 			foreach ($table->getColumns() as $col) {
 				$toReturn .= '<th>' . $col->getLabel() . '</th>';
 			}
-			$toReturn .= '</tr>';
+			$toReturn .= '<th>Actions</th></tr>';
 			while ($record = $result->fetch_assoc()) {
 				$toReturn .= '<tr>';
 				foreach ($table->getColumns() as $col) {
@@ -77,6 +84,7 @@
 					$toReturn .= empty($foreignKeyInfo) ? $val : getForeignKeyLink($val, $foreignKeyInfo);
 					$toReturn .= '</td>';
 				}
+				$toReturn .= '<td>' . getModifyLink($table, $record) . '</td>';
 				$toReturn .= '</tr>';
 			}
 			$toReturn .= '</table>';

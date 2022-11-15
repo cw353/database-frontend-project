@@ -31,10 +31,8 @@
 		]),
 		'shift' => new Table('shift', 'Shifts', ['driverid', 'shiftstart'], [
       new Column('driverid', 'Driver ID', new ForeignKeyInfo('driver', 'driverid')), 
-			new Column('shiftstart_date', 'Shift Start Date', null, 'date(shiftstart)'),
-			new Column('shiftstart_time', 'Shift Start Time', null, 'time(shiftstart)'),
-			new Column('shiftend_date', 'Shift End Date', null, 'date(shiftend)'),
-			new Column('shiftend_time', 'Shift End Time', null, 'time(shiftend)'),
+			new Column('shiftstart', 'Shift Start'), 
+			new Column('shiftend', 'Shift End'), 
 			new Column('shiftlength_in_hrs', 'Shift Length (Hours)', null, 'round(timestampdiff(minute, shiftstart, shiftend)/60, 2)'),
 			new Column('hourlypay', 'Hourly Pay'),
 		]),
