@@ -1,3 +1,5 @@
+<?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
+
 <?php
 	class Table {
 		private $name, $label, $columns;

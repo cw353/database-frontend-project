@@ -1,3 +1,5 @@
+<?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
+
 <?php
 	$operators = array(
 		'e' => array('label' => 'is', 'op' => '='),
