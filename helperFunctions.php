@@ -57,7 +57,7 @@
 		foreach($table->getPrimaryKeys() as $pk) {
 			$params .= "&$pk=" . $record[$pk];
 		}
-		return "<a href='alterRecord.php?table_to_query=" . $table->getName() . "$params'>Modify Record</a>";
+		return "<a href='modifyRecord.php?table_to_query=" . $table->getName() . "$params'>Modify Record</a>";
 	}
 
 	function getResultTable(mysqli_result $result, Table $table) {

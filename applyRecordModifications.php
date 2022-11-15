@@ -5,8 +5,8 @@
 	require_once 'tables.php';
 	require_once 'operators.php';
 
-	$mysqli = new mysqli('localhost', 'root', 'root', 'project');
-	$table_to_query = $_GET['table_to_query'];
+	//$mysqli = new mysqli('localhost', 'root', 'root', 'project');
+	/*$table_to_query = $_GET['table_to_query'];
 	$table = $tables[$table_to_query];
 
 	$filter_expr = []; // filter expressions
@@ -23,7 +23,7 @@
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
-	$result = getQueryResult($mysqli, $query, $filter_var, $filter_types);
+	$result = getQueryResult($mysqli, $query, $filter_var, $filter_types);*/
 ?>
 
 <!DOCTYPE html>
@@ -33,21 +33,7 @@
 	</head>
 
 	<body>
-		<?php if (!$result): ?>
-			<p>An error occurred while trying to process your query.</p>
-		<?php elseif ($result && $result->num_rows < 1): ?>
-			<p>No records matching your query were found.</p>
-		<?php else: ?>
-			<form method="get" action="applyRecordModifications.php">
-				<input type="hidden" name="table_to_query" value="<?php echo $table_to_query; ?>">
-				<?php
-					echo getModifiableTable($table, $mysqli, $result->fetch_assoc());
-				?>
-				<button type="submit">Apply Changes</button>
-			</form>
-		<?php endif; ?>
-
-
+		<p>Placeholder</p>
 
 	</body>
 </html>
