@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>View Records</title>
+		<title>Choose Table</title>
 	</head>
 
 	<body>

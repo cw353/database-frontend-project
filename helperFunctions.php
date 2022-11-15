@@ -109,12 +109,16 @@
 
 	function getModifiableTable(Table $table, mysqli $mysqli, array $record = null) {
 		$toReturn = '<table><tr><th>Field</th><th>Value</th></tr>';
+		if (!empty($record)) {
+			foreach($table->getPrimaryKeys() as $pk) {
+				$toReturn .= "<input type='hidden' name='$pk" . "_old' value='" . $record[$pk] . "'>";
+			}
+		}
 		foreach ($table->getColumns() as $col) {
 			$colname = $col->getName();
-			$collabel = $col->getLabel();
-			$toReturn .= "<tr><td>$collabel</td><td>";
+			$toReturn .= "<tr><td>" . $col->getLabel() ."</td><td>";
 			if ($fkInfo = $col->getForeignKeyInfo()) {
-				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $collabel);
+				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $colname);
 			} else {
 				$toReturn .= "<input type='text' name='$colname'";
 				if ($record) { $toReturn .= " value='" . $record[$colname] . "'"; }
