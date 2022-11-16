@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Modify Record</title>
+		<title>Add New Record</title>
 	</head>
 
 	<body>

@@ -8,26 +8,24 @@
 	$tablename = $_GET['table'];
 	$table = $tables[$tablename];
 
-	$set_expr = [];
-	$set_var = [];
-	$set_types = '';
+	$colnames = [];
+	$placeholders = [];
+	$values = [];
+	$types = '';
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
+		$val = $_GET[$colname];
+		if (isset($val)) {
+			array_push($colnames, 
+			if ($val === '') {
+				$val = null;
+			}
+		}
 		$comparand = $_GET[$colname];
 		$expr = "$colname = ?";
-		array_push($set_expr, $expr);
-		array_push($set_var, $comparand);
-		$set_types .= 's';
-	}
-	$filter_expr = []; // filter expressions
-	$filter_var = []; // comparands to bind for filters
-	$filter_types = ''; // types of variables to bind for filters
-	foreach ($table->getPrimaryKeys() as $pk) {
-		$comparand = $_GET[$pk.'_old'];
-		$expr = "$pk = ?";
-		array_push($filter_expr, $expr);
-		array_push($filter_var, $comparand);
-		$filter_types .= 's';
+		array_push($insert_expr, $expr);
+		array_push($insert_var, $comparand);
+		$insert_types .= 's';
 	}
 
 	$query = 'update ' . $table->getName() . ' set ' . join(', ', $set_expr) . ' where ' . join(' and ', $filter_expr);

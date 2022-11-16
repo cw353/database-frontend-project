@@ -53,12 +53,13 @@
 		return $result;
 	}
 
-	function getModifyLink(Table $table, array $record) {
+	function getActionLinks(Table $table, array $record) {
+		$tablename = sanitizeHtml($table->getName());
 		$params = '';
 		foreach($table->getPrimaryKeys() as $pk) {
 			$params .= '&' . sanitizeHtml($pk) . '=' . sanitizeHtml($record[$pk]);
 		}
-		return "<a href='modifyRecord.php?table=" . sanitizeHtml($table->getName()) . "$params'>Modify Record</a>";
+		return "<a href='modifyRecord.php?table=$tablename" . "$params'>Modify Record</a>" . " | <a href='deleteRecord.php?table=$tablename" . "$params'>Delete Record</a>";
 	}
 
 	function getResultTable(mysqli_result $result, Table $table) {
@@ -85,7 +86,7 @@
 					$toReturn .= empty($foreignKeyInfo) ? $val : getForeignKeyLink($val, $foreignKeyInfo);
 					$toReturn .= '</td>';
 				}
-				$toReturn .= '<td>' . getModifyLink($table, $record) . '</td>';
+				$toReturn .= '<td>' . getActionLinks($table, $record) . '</td>';
 				$toReturn .= '</tr>';
 			}
 			$toReturn .= '</table>';
