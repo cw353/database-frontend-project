@@ -26,10 +26,11 @@
 	class Column {
 		const READ = 0b1;
 		const WRITE = 0b10;
-		private $name, $label, $foreignKeyInfo, $ioAccess, $sqlExpression;
-		function __construct(string $name, string $label, ForeignKeyInfo $foreignKeyInfo = null, int $ioAccess = Column::READ|COLUMN::WRITE, string $sqlExpression = null) {
+		private $name, $label, $type, $foreignKeyInfo, $ioAccess, $sqlExpression;
+		function __construct(string $name, string $label, string $type, ForeignKeyInfo $foreignKeyInfo = null, int $ioAccess = Column::READ|COLUMN::WRITE, string $sqlExpression = null) {
 			$this->name = $name;
 			$this->label = $label;
+			$this->type = $type;
 			$this->foreignKeyInfo = $foreignKeyInfo;
 			$this->ioAccess = $ioAccess;
 			$this->sqlExpression = $sqlExpression;
@@ -39,6 +40,9 @@
 		}
 		function getLabel() {
 			return $this->label;
+		}
+		function getType() {
+			return $this->type;
 		}
 		function getForeignKeyInfo() {
 			return $this->foreignKeyInfo;

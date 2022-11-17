@@ -12,12 +12,14 @@
 	$set_var = [];
 	$set_types = '';
 	foreach ($table->getColumns() as $col) {
-		$colname = $col->getName();
-		$comparand = $_GET[$colname];
-		$expr = "$colname = ?";
-		array_push($set_expr, $expr);
-		array_push($set_var, $comparand);
-		$set_types .= 's';
+		if ($col->isWritable()) {
+			$colname = $col->getName();
+			$comparand = $_GET[$colname];
+			$expr = "$colname = ?";
+			array_push($set_expr, $expr);
+			array_push($set_var, $comparand);
+			$set_types .= 's';
+		}
 	}
 	$filter_expr = []; // filter expressions
 	$filter_var = []; // comparands to bind for filters

@@ -113,6 +113,31 @@
 		return $toReturn;
 	}
 
+	function getInput(string $type, string $name, string $val = null) {
+		$toReturn = "<input name='$name'";
+		switch ($type) {
+			case 'int':
+				$toReturn .= " type='number'";
+				break;
+			case 'date':
+				$toReturn .= " type='date'";
+				break;
+			case 'time':
+				$toReturn .= " type='time'";
+				break;
+			case 'money':
+				$toReturn .= " type='number' step='.01'";
+				break;
+			default:
+				$toReturn .= " type='text'";
+		}
+		if (isset($val)) {
+			$toReturn .= " value='$val'";
+		}
+		$toReturn .= '/>';
+		return $toReturn;
+	}
+
 	function getModifiableTable(Table $table, mysqli $mysqli, array $record = null) {
 		$toReturn = '<table><tr><th>Field</th><th>Value</th></tr>';
 		if (!empty($record)) {
@@ -127,11 +152,12 @@
 				if ($fkInfo = $col->getForeignKeyInfo()) {
 					$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $colname);
 				} else {
-					$toReturn .= "<input type='text' name='$colname'";
+					$toReturn .= getInput($col->getType(), $colname, $record ? sanitizeHtml($record[$colname]) : null);
+					/*$toReturn .= "<input type='text' name='$colname'";
 					if ($record) {
 						$toReturn .= " value='" . sanitizeHtml($record[$colname]) . "'";
 					}
-					$toReturn .= '/>';
+					$toReturn .= '/>';*/
 				}
 				$toReturn .= '</td></tr>';
 			}
