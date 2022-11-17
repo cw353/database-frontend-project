@@ -29,16 +29,18 @@
 				</tr>
 			<?php
 				foreach ($table->getColumns() as $col) {
-					$colname = sanitizeHtml($col->getName());
-					echo '<tr>';
-					echo '<td>' . sanitizeHtml($col->getLabel()) . '</td>';
-					echo "<td><select name=$colname" . '_op>';
-					foreach ($operators as $key=>$val) {
-						echo "<option value='" . sanitizeHtml($key) . "'>" . sanitizeHtml($val['label']) . '</option>';
+					if ($col->isReadable()) {
+						$colname = sanitizeHtml($col->getName());
+						echo '<tr>';
+						echo '<td>' . sanitizeHtml($col->getLabel()) . '</td>';
+						echo "<td><select name=$colname" . '_op>';
+						foreach ($operators as $key=>$val) {
+							echo "<option value='" . sanitizeHtml($key) . "'>" . sanitizeHtml($val['label']) . '</option>';
+						}
+						echo '</select></td>';
+						echo "<td><input type='text' name='$colname'></td>";
+						echo '</tr>';
 					}
-					echo '</select></td>';
-					echo "<td><input type='text' name='$colname'></td>";
-					echo '</tr>';
 				}
 			?>
 			</table>

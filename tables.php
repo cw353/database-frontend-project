@@ -23,7 +23,7 @@
 		]),
 		'repairtechnician' => new Table('repairtechnician', 'Repair Technicians', ['rtid'], [
       new Column('rtid', 'ID'), 
-			new Column('fullname', 'Full Name', null, Column::READ, "concat(rtfname, ' ', rtlname)"),
+			new Column('fullname', 'Name', null, Column::READ, "concat(rtfname, ' ', rtlname)"),
 			new Column('rtfname', 'First Name', null, Column::WRITE),
 			new Column('rtlname', 'Last Name', null, Column::WRITE),
 		]),

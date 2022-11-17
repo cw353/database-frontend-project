@@ -74,17 +74,21 @@
 			$toReturn .= '<caption>' . sanitizeHtml($table->getLabel()) . '</caption>';
 			$toReturn .= '<tr>';
 			foreach ($table->getColumns() as $col) {
-				$toReturn .= '<th>' . sanitizeHtml($col->getLabel()) . '</th>';
+				if ($col->isReadable()) {
+					$toReturn .= '<th>' . sanitizeHtml($col->getLabel()) . '</th>';
+				}
 			}
 			$toReturn .= '<th>Actions</th></tr>';
 			while ($record = $result->fetch_assoc()) {
 				$toReturn .= '<tr>';
 				foreach ($table->getColumns() as $col) {
-					$val = sanitizeHtml($record[$col->getName()]);
-					$foreignKeyInfo = $col->getForeignKeyInfo();
-					$toReturn .= '<td>';
-					$toReturn .= empty($foreignKeyInfo) ? $val : getForeignKeyLink($val, $foreignKeyInfo);
-					$toReturn .= '</td>';
+					if ($col->isReadable()) {
+						$val = sanitizeHtml($record[$col->getName()]);
+						$foreignKeyInfo = $col->getForeignKeyInfo();
+						$toReturn .= '<td>';
+						$toReturn .= empty($foreignKeyInfo) ? $val : getForeignKeyLink($val, $foreignKeyInfo);
+						$toReturn .= '</td>';
+					}
 				}
 				$toReturn .= '<td>' . getActionLinks($table, $record) . '</td>';
 				$toReturn .= '</tr>';
@@ -117,17 +121,20 @@
 			}
 		}
 		foreach ($table->getColumns() as $col) {
-			$colname = sanitizeHtml($col->getName());
-			$toReturn .= "<tr><td>" . sanitizeHtml($col->getLabel()) ."</td><td>";
-			if ($fkInfo = $col->getForeignKeyInfo()) {
-				$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $colname);
-			} else {
-				$toReturn .= "<input type='text' name='$colname'";
-				if ($record) { $toReturn .= " value='" . sanitizeHtml($record[$colname]) . "'"; }
-				$toReturn .= '/>';
+			if ($col->isWritable()) {
+				$colname = sanitizeHtml($col->getName());
+				$toReturn .= "<tr><td>" . sanitizeHtml($col->getLabel()) ."</td><td>";
+				if ($fkInfo = $col->getForeignKeyInfo()) {
+					$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $colname);
+				} else {
+					$toReturn .= "<input type='text' name='$colname'";
+					if ($record) {
+						$toReturn .= " value='" . sanitizeHtml($record[$colname]) . "'";
+					}
+					$toReturn .= '/>';
+				}
+				$toReturn .= '</td></tr>';
 			}
-			$toReturn .= '</td></tr>';
-		
 		}
 		$toReturn .= '</table>';
 		return $toReturn;
