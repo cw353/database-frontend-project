@@ -10,7 +10,7 @@
 	}
 
 	/* sanitize a string for use in html (returns empty string if empty) */
-	function sanitizeHtml(string $input) {
+	function sanitizeHtml(string $input = null) {
 			return empty($input) ? '' : htmlspecialchars($input, ENT_QUOTES);	
 	}
 
