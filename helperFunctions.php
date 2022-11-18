@@ -27,6 +27,7 @@
 		if (!empty($filters)) {
 			$query .= ' where ' . join(' and ', $filters);
 		}
+		$query .= ' order by ' . join(', ', $table->getPrimaryKeys());
 		return $query;
 	}
 
