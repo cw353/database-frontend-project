@@ -19,9 +19,9 @@
 			// operator info (if none provided, assume default case 'e')
 			$op = isset($_GET[$colname.'_op']) ? $_GET[$colname.'_op'] : 'e';
 			// comparand
-			$comparand = (($op === 'c' or $op === 'end') ? '%' : '')
+			$comparand = (in_array($op, ['c', 'nc', 'end', 'nend']) ? '%' : '')
 				. $_GET[$colname]
-				. (($op === 'c' or $op === 'start') ? '%' : '');
+				. (in_array($op, ['c', 'nc', 'start', 'nstart'])  ? '%' : '');
 			$sql_op = $operators[$op]['op']; // sql operator
 			$attr = $col->getSqlExpression(); // attribute
 			// build expression from attribute and operator with ? placeholder for var
