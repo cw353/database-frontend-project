@@ -1,4 +1,4 @@
-<?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
+<rphp header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php
 	require_once 'helperFunctions.php';
@@ -45,7 +45,6 @@
 		<?php
 			if ($num_affected < 0) {
 				echo "<p>An error occurred and the operation could not be completed.</p>";
-				echo "error: " . $mysqli->errno;
 			} else {
 				echo "<p>The operation has succeeded. $num_affected record";
 				echo $num_affected === 1 ? ' has' : 's have';
