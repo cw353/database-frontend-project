@@ -38,7 +38,8 @@
 							echo "<option value='" . sanitizeHtml($key) . "'>" . sanitizeHtml($val['label']) . '</option>';
 						}
 						echo '</select></td>';
-						echo "<td><input type='text' name='$colname'></td>";
+						echo '<td>' . getColumnInput($col) . '</td';
+						//echo "<td><input type='text' name='$colname'></td>";
 						echo '</tr>';
 					}
 				}

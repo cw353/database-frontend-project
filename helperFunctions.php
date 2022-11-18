@@ -113,11 +113,14 @@
 		return $toReturn;
 	}
 
-	function getInput(string $type, string $name, string $val = null) {
-		$toReturn = "<input name='$name'";
-		switch ($type) {
+	function getColumnInput(Column $col, string $val = null) {
+		$toReturn = "<input name='" . sanitizeHtml($col->getName()) . "'";
+		switch ($col->getType()) {
 			case 'int':
 				$toReturn .= " type='number'";
+				break;
+			case 'id':
+				$toReturn .= " type='number' min='1'";
 				break;
 			case 'date':
 				$toReturn .= " type='date'";
@@ -132,7 +135,7 @@
 				$toReturn .= " type='text'";
 		}
 		if (isset($val)) {
-			$toReturn .= " value='$val'";
+			$toReturn .= " value='" . sanitizeHtml($val) . "'";
 		}
 		$toReturn .= '/>';
 		return $toReturn;
@@ -152,7 +155,7 @@
 				if ($fkInfo = $col->getForeignKeyInfo()) {
 					$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $colname);
 				} else {
-					$toReturn .= getInput($col->getType(), $colname, $record ? sanitizeHtml($record[$colname]) : null);
+					$toReturn .= getColumnInput($col, $record ? $record[$colname] : null);
 					/*$toReturn .= "<input type='text' name='$colname'";
 					if ($record) {
 						$toReturn .= " value='" . sanitizeHtml($record[$colname]) . "'";
