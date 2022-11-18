@@ -37,12 +37,12 @@
 		return "<a href='viewFilteredRecords.php?table=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
 
-	/* precondition: if $filter_var is not null, then $filter_types should not be null either and should contain the same number of chars as $filter_var contains values */
-	function getQueryResult(mysqli $mysqli, string $query, array $filter_var = null, string $filter_types = null) {
+	/* precondition: if $param_var is not null, then $param_types should not be null either and should contain the same number of chars as $param_var contains values */
+	function getQueryResult(mysqli $mysqli, string $query, array $param_var = null, string $param_types = null) {
 		// if filtering data, use prepared statement
-	  if ($filter_var && sizeof($filter_var) > 0) {
+	  if ($param_var && sizeof($param_var) > 0) {
     	$stmt = $mysqli->prepare($query);
-    	$stmt->bind_param($filter_types, ...$filter_var);
+    	$stmt->bind_param($param_types, ...$param_var);
     	$stmt->execute();
     	$result = $stmt->get_result();
     	$stmt && $stmt->close();

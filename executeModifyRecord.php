@@ -4,7 +4,7 @@
 	require_once 'helperFunctions.php';
 	require_once 'tables.php';
 
-	//$mysqli = new mysqli('localhost', 'root', 'root', 'project');
+	$mysqli = new mysqli('localhost', 'root', 'root', 'project');
 	$tablename = $_GET['table'];
 	$table = $tables[$tablename];
 
@@ -35,10 +35,18 @@
 	$query = 'update ' . $table->getName() . ' set ' . join(', ', $set_expr) . ' where ' . join(' and ', $filter_expr);
 
 	echo $query;
-	echo " - set_var: " . join(', ', $set_var);
-	echo " - filter_var: " . join(', ', $filter_var);
+	//echo " - set_var: " . join(', ', $set_var);
+	//echo " - filter_var: " . join(', ', $filter_var);
+	echo ' - ' . join(', ', array_merge($set_var, $filter_var));
+	echo ' - ' . $set_types.$filter_types;
 
-	//$result = getQueryResult($mysqli, $query, $filter_var, $filter_types);*/
+	$result = getQueryResult($mysqli, $query, array_merge($set_var, $filter_var), $set_types.$filter_types);
+
+	if (!empty($result)) {
+		echo var_dump($result);
+	} else {
+		echo " - result is empty";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +67,6 @@
 </html>
 
 <?php
-	/*$result && $result->free();
-	$mysqli && $mysqli->close();*/
+	$result && $result->free();
+	$mysqli && $mysqli->close();
 ?>
