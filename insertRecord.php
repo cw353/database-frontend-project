@@ -18,7 +18,7 @@
 	</head>
 
 	<body>
-		<form method="" action="">
+		<form method="get" action="executeInsertRecord.php">
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<?php
 				echo getModifiableTable($table, $mysqli);

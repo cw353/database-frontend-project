@@ -38,7 +38,7 @@
 	}
 
 	/* precondition: if $param_var is not null, then $param_types should not be null either and should contain the same number of chars as $param_var contains values */
-	function getQueryResult(mysqli $mysqli, string $query, array $param_var = null, string $param_types = null) {
+	function executeQueryGetResult(mysqli $mysqli, string $query, array $param_var = null, string $param_types = null) {
 		// if filtering data, use prepared statement
 	  if ($param_var && sizeof($param_var) > 0) {
     	$stmt = $mysqli->prepare($query);
@@ -51,6 +51,23 @@
     	$result = $mysqli->query($query);
 		}
 		return $result;
+	}
+
+		/* precondition: if $param_var is not null, then $param_types should not be null either and should contain the same number of chars as $param_var contains values */
+	function executeQueryGetAffected(mysqli $mysqli, string $query, array $param_var = null, string $param_types = null) {
+		// if filtering data, use prepared statement
+	  if ($param_var && sizeof($param_var) > 0) {
+    	$stmt = $mysqli->prepare($query);
+    	$stmt->bind_param($param_types, ...$param_var);
+    	$stmt->execute();
+    	$affected = $stmt->affected_rows;
+    	$stmt && $stmt->close();
+  	} else {
+    	// otherwise, use regular query
+    	$mysqli->query($query);
+			$affected = $mysqli->affected_rows;
+		}
+		return $affected;
 	}
 
 	function getActionLinks(Table $table, array $record) {
@@ -101,7 +118,7 @@
 	function getForeignKeyDropdown(ForeignKeyInfo $foreignKeyInfo, mysqli $mysqli, string $value = null, string $selectname) {
 		$table = $foreignKeyInfo->getTable();
 		$field = $foreignKeyInfo->getField();
-		$result = getQueryResult($mysqli, "select $field from $table order by $field");
+		$result = executeQueryGetResult($mysqli, "select $field from $table order by $field");
 		$toReturn = "<select name='" . sanitizeHtml($selectname) . "'>";
 		while ($result && $record = $result->fetch_assoc()) {
 			$option = sanitizeHtml($record[$field]);

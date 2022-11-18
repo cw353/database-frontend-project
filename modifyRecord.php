@@ -23,7 +23,7 @@
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
-	$result = getQueryResult($mysqli, $query, $filter_var, $filter_types);
+	$result = executeQueryGetResult($mysqli, $query, $filter_var, $filter_types);
 ?>
 
 <!DOCTYPE html>

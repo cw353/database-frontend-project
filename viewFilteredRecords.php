@@ -33,7 +33,7 @@
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
-	$result = getQueryResult($mysqli, $query, $filter_var, $filter_types);
+	$result = executeQueryGetResult($mysqli, $query, $filter_var, $filter_types);
 
 ?>
 
@@ -51,6 +51,10 @@
 
 		<br>
 
+		<form method="get" action="insertRecord.php">
+			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
+			<button type="submit">Insert a New Record</button>
+		</form>
 		<form method="post" action="chooseTable.php">
 			<button type="submit">Filter Records for Another Table</button>
 		</form>

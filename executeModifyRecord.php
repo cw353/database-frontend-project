@@ -15,10 +15,15 @@
 		if ($col->isWritable()) {
 			$colname = $col->getName();
 			$comparand = $_GET[$colname];
-			$expr = "$colname = ?";
-			array_push($set_expr, $expr);
-			array_push($set_var, $comparand);
-			$set_types .= 's';
+			if ($comparand === '') {
+				$expr = "$colname = NULL";
+				array_push($set_expr, $expr);
+			} else {
+				$expr = "$colname = ?";
+				array_push($set_expr, $expr);
+				array_push($set_var, $comparand);
+				$set_types .= 's';
+			}
 		}
 	}
 	$filter_expr = []; // filter expressions
@@ -34,31 +39,30 @@
 
 	$query = 'update ' . $table->getName() . ' set ' . join(', ', $set_expr) . ' where ' . join(' and ', $filter_expr);
 
-	echo $query;
-	//echo " - set_var: " . join(', ', $set_var);
-	//echo " - filter_var: " . join(', ', $filter_var);
-	echo ' - ' . join(', ', array_merge($set_var, $filter_var));
-	echo ' - ' . $set_types.$filter_types;
 
-	$result = getQueryResult($mysqli, $query, array_merge($set_var, $filter_var), $set_types.$filter_types);
-
-	if (!empty($result)) {
-		echo var_dump($result);
-	} else {
-		echo " - result is empty";
-	}
+	$num_affected = executeQueryGetAffected($mysqli, $query, array_merge($set_var, $filter_var), $set_types.$filter_types);
 ?>
 
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Modify Record</title>
+		<title>Execute Modify Record</title>
 	</head>
 
 	<body>
-
-		<br>
-		<br>
+		<?php
+			if ($num_affected < 0) {
+				echo "<p>An error occurred and the operation could not be completed.</p>";
+			} else {
+				echo "<p>The operation has succeeded. $num_affected record";
+				echo $num_affected === 1 ? ' has' : 's have';
+				echo ' been modified. Any other records that reference this record have been updated as necessary.</p>';
+			}
+		?>
+		<form method="get" action="viewFilteredRecords.php">
+			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
+			<button type="submit">View Results</button>
+		</form>
 		<form method="post" action="chooseTable.php">
 			<button type="submit">Filter Records for Another Table</button>
 		</form>
@@ -67,6 +71,5 @@
 </html>
 
 <?php
-	$result && $result->free();
 	$mysqli && $mysqli->close();
 ?>

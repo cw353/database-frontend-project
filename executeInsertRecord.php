@@ -4,49 +4,58 @@
 	require_once 'helperFunctions.php';
 	require_once 'tables.php';
 
-	//$mysqli = new mysqli('localhost', 'root', 'root', 'project');
+	$mysqli = new mysqli('localhost', 'root', 'root', 'project');
 	$tablename = $_GET['table'];
 	$table = $tables[$tablename];
 
-	$colnames = [];
-	$placeholders = [];
-	$values = [];
-	$types = '';
-	foreach ($table->getColumns() as $col) {
-		$colname = $col->getName();
-		$val = $_GET[$colname];
-		if (isset($val)) {
-			array_push($colnames, 
+  $colnames = [];
+  $insert_values = [];
+  $param_values = [];
+  $param_types = '';
+  foreach ($table->getColumns() as $col) {
+		if ($col->isWritable()) {
+	    $colname = $col->getName();
+    	$val = $_GET[$colname];
+			array_push($colnames, $colname);
 			if ($val === '') {
-				$val = null;
+				array_push($insert_values, 'NULL');
+			} else {
+				array_push($insert_values, '?');
+				array_push($param_values, $val);
+ 	   		$param_types .= 's';
 			}
-		}
-		$comparand = $_GET[$colname];
-		$expr = "$colname = ?";
-		array_push($insert_expr, $expr);
-		array_push($insert_var, $comparand);
-		$insert_types .= 's';
+ 		}
 	}
 
-	$query = 'update ' . $table->getName() . ' set ' . join(', ', $set_expr) . ' where ' . join(' and ', $filter_expr);
+	$query = 'insert into ' . $table->getName() . ' (' . join(', ', $colnames) . ') values (' . join(', ', $insert_values) . ')';
 
 	echo $query;
-	echo " - set_var: " . join(', ', $set_var);
-	echo " - filter_var: " . join(', ', $filter_var);
+	echo ' - ' . join(', ', $param_values);
 
-	//$result = getQueryResult($mysqli, $query, $filter_var, $filter_types);*/
+	$num_affected = executeQueryGetAffected($mysqli, $query, $param_values, $param_types);
 ?>
 
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Modify Record</title>
+		<title>Execute Modify Record</title>
 	</head>
 
 	<body>
-
-		<br>
-		<br>
+		<?php
+			if ($num_affected < 0) {
+				echo "<p>An error occurred and the operation could not be completed.</p>";
+				echo "error: " . $mysqli->errno;
+			} else {
+				echo "<p>The operation has succeeded. $num_affected record";
+				echo $num_affected === 1 ? ' has' : 's have';
+				echo ' been inserted.</p>';
+			}
+		?>
+		<form method="get" action="viewFilteredRecords.php">
+			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
+			<button type="submit">View Results</button>
+		</form>
 		<form method="post" action="chooseTable.php">
 			<button type="submit">Filter Records for Another Table</button>
 		</form>
@@ -55,6 +64,5 @@
 </html>
 
 <?php
-	/*$result && $result->free();
-	$mysqli && $mysqli->close();*/
+	$mysqli && $mysqli->close();
 ?>
