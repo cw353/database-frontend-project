@@ -29,9 +29,6 @@
 
 	$query = 'insert into ' . $table->getName() . ' (' . join(', ', $colnames) . ') values (' . join(', ', $insert_values) . ')';
 
-	echo $query;
-	echo ' - ' . join(', ', $param_var);
-
   // if using variable parameters, use prepared statement
   if (sizeof($param_var) > 0) {
     $stmt = $mysqli->prepare($query);
