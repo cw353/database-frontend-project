@@ -9,24 +9,24 @@
 	$table = $tables[$tablename];
 
 	$filter_expr = []; // filter expressions
-	$filter_var = []; // comparands to bind for filters
-	$filter_types = ''; // types of variables to bind for filters
+	$param_var = []; // comparands to bind for filters
+	$param_types = ''; // types of variables to bind for filters
 	$primaryKeys = $table->getPrimaryKeys();
 	foreach ($primaryKeys as $pk) {
 		// add to filters only if comparand was provided
 		$comparand = $_GET[$pk];
 		$expr = "$pk = ?";
 		array_push($filter_expr, $expr);
-		array_push($filter_var, $comparand);
-		$filter_types .= 's';
+		array_push($param_var, $comparand);
+		$param_types .= 's';
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
 
-	// if filtering data, use prepared statement
-  if (sizeof($filter_var) > 0) {
+	// if using variable parameters, use prepared statement
+  if (sizeof($param_var) > 0) {
     $stmt = $mysqli->prepare($query);
-    $stmt->bind_param($filter_types, ...$filter_var);
+    $stmt->bind_param($param_types, ...$param_var);
     $result = $stmt->execute() ? $stmt->get_result() : null;
   } else {
     // otherwise, use regular query

@@ -9,41 +9,51 @@
 	$table = $tables[$tablename];
 
 	$filter_expr = []; // filter expressions
-	$filter_var = []; // comparands to bind for filters
-	$filter_types = ''; // types of variables to bind for filters
+	$param_var = []; // comparands to bind for filters
+	$param_types = ''; // types of variables to bind for filters
 	foreach ($table->getPrimaryKeys() as $pk) {
 		$comparand = $_GET[$pk];
 		$expr = "$pk = ?";
 		array_push($filter_expr, $expr);
-		array_push($filter_var, $comparand);
-		$filter_types .= 's';
+		array_push($param_var, $comparand);
+		$param_types .= 's';
 	}
 
 	$query = 'delete from ' . $table->getName() . ' where ' . join(' and ', $filter_expr);
 
-	$num_affected = executeQueryGetAffected($mysqli, $query, $filter_var, $filter_types);
+  // if using variable parameters, use prepared statement
+  if (sizeof($param_var) > 0) {
+    $stmt = $mysqli->prepare($query);
+    $stmt->bind_param($param_types, ...$param_var);
+    $num_affected = $stmt->execute() ? $stmt->affected_rows : -1;
+  } else {
+    // otherwise, use regular query
+    $num_affected = $mysqli->query($query) ? $mysqli->affected_rows : -1;
+  }
+
 ?>
 
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Delete Record</title>
+		<title>Delete Record Results</title>
 	</head>
 
 	<body>
-		<?php
-			if ($num_affected < 0) {
-				echo "<p>An error occurred and the operation could not be completed.</p>";
-			} else {
-				echo "<p>The operation has succeeded. $num_affected record";
-				echo $num_affected === 1 ? ' has' : 's have';
-				echo ' been deleted. Any other records that reference this record have also been deleted as necessary.</p>';
-			}
-		?>
+    <?php
+      if ($num_affected < 0) {
+        echo '<p>An error occurred and the operation could not be completed. ' . $mysqli->error . '</p>';
+      } else {
+        echo "<p>The operation has succeeded. $num_affected record";
+        echo $num_affected === 1 ? ' has' : 's have';
+        echo ' been deleted. Any other records that reference this record have been deleted as necessary.</p>';
+      }
+    ?>
 		<form method="get" action="viewFilteredRecords.php">
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<button type="submit">View Results</button>
 		</form>
+		<br>
 		<form method="post" action="chooseTable.php">
 			<button type="submit">Filter Records for Another Table</button>
 		</form>
