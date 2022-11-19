@@ -131,7 +131,7 @@
 		return $toReturn;
 	}
 
-	function getColumnInput(Column $col, string $val = null) {
+	function getColumnInput(Column $col, string $val = null, bool $enforceRequired = true) {
 		$toReturn = "<input name='" . sanitizeHtml($col->getName()) . "'";
 		switch ($col->getType()) {
 			case 'int':
@@ -154,6 +154,9 @@
 		}
 		if (isset($val)) {
 			$toReturn .= " value='" . sanitizeHtml($val) . "'";
+		}
+		if ($enforceRequired && !$col->isOptional()) {
+			$toReturn .= " required";
 		}
 		$toReturn .= '/>';
 		return $toReturn;

@@ -9,7 +9,7 @@
       new Column('driverid', 'ID', 'id'),
       new Column('driverlicenseno', 'License #', 'text'),
       new Column('drivername', 'Name', 'text'),
-      new Column('drivernickname', 'Nickname', 'text'),
+      new Column('drivernickname', 'Nickname', 'text', null, Column::READ|Column::WRITE|Column::OPTIONAL),
       new Column('bonus', 'Bonus', 'money'),
     ]),
 		'truck' => new Table('truck', 'Trucks', ['truckid'], [

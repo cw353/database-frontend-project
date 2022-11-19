@@ -26,13 +26,14 @@
 	class Column {
 		const READ = 0b1;
 		const WRITE = 0b10;
-		private $name, $label, $type, $foreignKeyInfo, $ioAccess, $sqlExpression;
-		function __construct(string $name, string $label, string $type, ForeignKeyInfo $foreignKeyInfo = null, int $ioAccess = Column::READ|COLUMN::WRITE, string $sqlExpression = null) {
+		const OPTIONAL = 0b100;
+		private $name, $label, $type, $foreignKeyInfo, $inputConstraints, $sqlExpression;
+		function __construct(string $name, string $label, string $type, ForeignKeyInfo $foreignKeyInfo = null, int $inputConstraints = Column::READ|COLUMN::WRITE, string $sqlExpression = null) {
 			$this->name = $name;
 			$this->label = $label;
 			$this->type = $type;
 			$this->foreignKeyInfo = $foreignKeyInfo;
-			$this->ioAccess = $ioAccess;
+			$this->inputConstraints = $inputConstraints;
 			$this->sqlExpression = $sqlExpression;
 		}
 		function getName() {
@@ -48,10 +49,13 @@
 			return $this->foreignKeyInfo;
 		}
 		function isReadable() {
-			return $this->ioAccess & Column::READ;
+			return $this->inputConstraints & Column::READ;
 		}
 		function isWritable() {
-			return $this->ioAccess & Column::WRITE;
+			return $this->inputConstraints & Column::WRITE;
+		}
+		function isOptional() {
+			return $this->inputConstraints & Column::OPTIONAL;
 		}
 		function getSqlExpression() {
 			return $this->sqlExpression === null
