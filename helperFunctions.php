@@ -131,7 +131,8 @@
 	}
 
 	function getModifiableTable(Table $table, mysqli $mysqli, array $record = null) {
-		$toReturn = '<table><tr><th>Field</th><th>Value</th></tr>';
+		$toReturn = "<p class='red'>*: required</p>";
+		$toReturn .= '<table><tr><th>Field</th><th>Value</th></tr>';
 		if (!empty($record)) {
 			foreach($table->getPrimaryKeys() as $pk) {
 				$toReturn .= "<input type='hidden' name='" . sanitizeHtml($pk.'_old') . "' value='" . sanitizeHtml($record[$pk]) . "'>";
