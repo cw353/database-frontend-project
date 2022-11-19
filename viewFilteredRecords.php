@@ -3,6 +3,7 @@
 <?php
 	require_once 'helperFunctions.php';
 	require_once 'tables.php';
+	require_once 'operators.php';
 
 	$mysqli = new mysqli('localhost', 'root', 'root', 'project');
 	$tablename = $_GET['table'];
@@ -49,10 +50,10 @@
 <html>
 	<head>
 		<title>View Records</title>
+		<link rel="stylesheet" href="stylesheet.css"/>
 	</head>
 
 	<body>
-
 		<?php
     	if (!$result) {
      		echo '<p>An error occurred while trying to process your query. ' . $mysqli->error . '</p>';
@@ -67,7 +68,6 @@
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<button type="submit">Insert a New Record</button>
 		</form>
-		<br>
 		<form method="post" action="chooseTable.php">
 			<button type="submit">Filter Records for Another Table</button>
 		</form>

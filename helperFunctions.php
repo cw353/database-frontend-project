@@ -44,13 +44,13 @@
 		foreach($table->getPrimaryKeys() as $pk) {
 			$params .= '&' . sanitizeHtml($pk) . '=' . sanitizeHtml($record[$pk]);
 		}
-		return "<a href='modifyRecord.php?table=$tablename" . "$params'>Modify Record</a>" . " | <a href='deleteRecord.php?table=$tablename" . "$params'>Delete Record</a>";
+		return "<a href='modifyRecord.php?table=$tablename" . "$params'>Modify Record</a>" . " / <a href='deleteRecord.php?table=$tablename" . "$params'>Delete Record</a>";
 	}
 
 	function getResultTable(mysqli_result $result, Table $table) {
 		$toReturn = "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
 		if ($result->num_rows > 0) {
-			$toReturn .= "<table>";
+			$toReturn .= "<table class='viewtable'>";
 			$toReturn .= '<caption>' . sanitizeHtml($table->getLabel()) . '</caption>';
 			$toReturn .= '<tr>';
 			foreach ($table->getColumns() as $col) {

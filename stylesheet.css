@@ -4,6 +4,36 @@
 	font-size: 1.1em;
 }
 
-/*input:required {
-	background-color: pink;
-}*/
+.viewtable {
+	border-collapse: collapse;
+}
+
+.viewtable th, .viewtable td {
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	padding: 5px;
+}
+
+.viewtable tr:first-child th {
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
+.viewtable tr:last-child td {
+	border-bottom: 1px solid black;
+}
+
+table caption {
+  font-size: 1.1em;
+  margin-bottom: 5px;
+}
+
+button[type=submit] {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+header {
+	font-size: 1.1em;
+	margin-bottom: 10px;
+}

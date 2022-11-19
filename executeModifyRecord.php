@@ -58,6 +58,7 @@
 <html>
 	<head>
 		<title>Modify Record Results</title>
+		<link rel="stylesheet" href="stylesheet.css"/>
 	</head>
 
 	<body>
@@ -74,7 +75,6 @@
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<button type="submit">View Results</button>
 		</form>
-		<br>
 		<form method="post" action="chooseTable.php">
 			<button type="submit">Filter Records for Another Table</button>
 		</form>

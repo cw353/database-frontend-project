@@ -9,10 +9,11 @@
 <html>
 	<head>
 		<title>Choose Table</title>
+		<link rel="stylesheet" href="stylesheet.css"/>
 	</head>
 
 	<body>
-		<header>Choose a table for which to view records.</header>
+		<header>Choose a table for which to view records:</header>
 		<form method="get" action="filterRecords.php">
 			<select name="table">
 				<?php

@@ -15,10 +15,11 @@
 <html>
 	<head>
 		<title>Filter Records</title>
+		<link rel="stylesheet" href="stylesheet.css"/>
 	</head>
 
 	<body>
-		<header><?php echo 'Filter Records for ' . sanitizeHtml($table->getLabel()) ?></header>
+		<header><?php echo 'Filter records for ' . sanitizeHtml($table->getLabel()) . ':'?></header>
 		<form method="get" action="viewFilteredRecords.php">
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<table>
