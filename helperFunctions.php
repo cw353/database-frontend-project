@@ -38,39 +38,6 @@
 		return "<a href='viewFilteredRecords.php?table=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
 
-	/* precondition: if $param_var is not null, then $param_types should not be null either and should contain the same number of chars as $param_var contains values */
-	function executeQueryGetResult(mysqli $mysqli, string $query, array $param_var = null, string $param_types = null) {
-		// if filtering data, use prepared statement
-	  if ($param_var && sizeof($param_var) > 0) {
-    	$stmt = $mysqli->prepare($query);
-    	$stmt->bind_param($param_types, ...$param_var);
-    	$stmt->execute();
-    	$result = $stmt->get_result();
-    	$stmt && $stmt->close();
-  	} else {
-    	// otherwise, use regular query
-    	$result = $mysqli->query($query);
-		}
-		return $result;
-	}
-
-		/* precondition: if $param_var is not null, then $param_types should not be null either and should contain the same number of chars as $param_var contains values */
-	function executeQueryGetAffected(mysqli $mysqli, string $query, array $param_var = null, string $param_types = null) {
-		// if filtering data, use prepared statement
-	  if ($param_var && sizeof($param_var) > 0) {
-    	$stmt = $mysqli->prepare($query);
-    	$stmt->bind_param($param_types, ...$param_var);
-    	$stmt->execute();
-    	$affected = $stmt->affected_rows;
-    	$stmt && $stmt->close();
-  	} else {
-    	// otherwise, use regular query
-    	$mysqli->query($query);
-			$affected = $mysqli->affected_rows;
-		}
-		return $affected;
-	}
-
 	function getActionLinks(Table $table, array $record) {
 		$tablename = sanitizeHtml($table->getName());
 		$params = '';
@@ -81,13 +48,8 @@
 	}
 
 	function getResultTable(mysqli_result $result, Table $table) {
-		$toReturn = '';
-		if (!$result) {
-		 $toReturn .= "<p>An error occurred while trying to process your query.</p>";
-		} else {
-		 $toReturn .= "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
-		}
-		if ($result && $result->num_rows > 0) {
+		$toReturn = "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
+		if ($result->num_rows > 0) {
 			$toReturn .= "<table>";
 			$toReturn .= '<caption>' . sanitizeHtml($table->getLabel()) . '</caption>';
 			$toReturn .= '<tr>';
@@ -116,18 +78,24 @@
 		return $toReturn;
 	}
 
-	function getForeignKeyDropdown(ForeignKeyInfo $foreignKeyInfo, mysqli $mysqli, string $value = null, string $selectname) {
+	/* Return a dropdown for foreign key. In case of SQL error, returns input instead. Precondition: $col->getForeignKeyInfo() does not return null. */
+	function getForeignKeyDropdown(Column $col, mysqli $mysqli, string $value = null, string $selectname) {
+		$foreignKeyInfo = $col->getForeignKeyInfo();
 		$table = $foreignKeyInfo->getTable();
 		$field = $foreignKeyInfo->getField();
-		$result = executeQueryGetResult($mysqli, "select $field from $table order by $field");
-		$toReturn = "<select name='" . sanitizeHtml($selectname) . "'>";
-		while ($result && $record = $result->fetch_assoc()) {
-			$option = sanitizeHtml($record[$field]);
-			$toReturn .= "<option value='$option'";
-			if (strval($option) === sanitizeHtml(strval($value))) { $toReturn .= " selected"; }
-			$toReturn .= ">$option</option>";
+		$result = $mysqli->query("select $field from $table order by $field");
+		if ($result) {
+			$toReturn = "<select name='" . sanitizeHtml($selectname) . "'>";
+			while ($result && $record = $result->fetch_assoc()) {
+				$option = sanitizeHtml($record[$field]);
+				$toReturn .= "<option value='$option'";
+				if (strval($option) === sanitizeHtml(strval($value))) { $toReturn .= " selected"; }
+				$toReturn .= ">$option</option>";
+			}
+			$toReturn .= '</select>';
+		} else {
+			$toReturn = getColumnInput($col, $value);
 		}
-		$toReturn .= '</select>';
 		return $toReturn;
 	}
 
@@ -173,15 +141,10 @@
 			if ($col->isWritable()) {
 				$colname = sanitizeHtml($col->getName());
 				$toReturn .= "<tr><td>" . sanitizeHtml($col->getLabel()) ."</td><td>";
-				if ($fkInfo = $col->getForeignKeyInfo()) {
-					$toReturn .= getForeignKeyDropdown($fkInfo, $mysqli, $record ? $record[$colname] : null, $colname);
+				if ($col->getForeignKeyInfo()) {
+					$toReturn .= getForeignKeyDropdown($col, $mysqli, $record ? $record[$colname] : null, $colname);
 				} else {
 					$toReturn .= getColumnInput($col, $record ? $record[$colname] : null);
-					/*$toReturn .= "<input type='text' name='$colname'";
-					if ($record) {
-						$toReturn .= " value='" . sanitizeHtml($record[$colname]) . "'";
-					}
-					$toReturn .= '/>';*/
 				}
 				$toReturn .= '</td></tr>';
 			}

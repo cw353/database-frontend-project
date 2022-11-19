@@ -33,7 +33,16 @@
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
-	$result = executeQueryGetResult($mysqli, $query, $filter_var, $filter_types);
+
+	// if filtering data, use prepared statement
+	if (sizeof($filter_var) > 0) {
+		$stmt = $mysqli->prepare($query);
+		$stmt->bind_param($filter_types, ...$filter_var);
+		$result = $stmt->execute() ? $stmt->get_result() : null;
+	} else {
+		// otherwise, use regular query
+		$result = $mysqli->query($query);
+	}
 
 ?>
 
@@ -46,7 +55,11 @@
 	<body>
 
 		<?php
-			echo getResultTable($result, $table);
+    	if (!$result) {
+     		echo '<p>An error occurred while trying to process your query. ' . $mysqli->error . '</p>';
+    	} else {
+				echo getResultTable($result, $table);
+			}
 		?>
 
 		<br>
@@ -55,6 +68,7 @@
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<button type="submit">Insert a New Record</button>
 		</form>
+		<br>
 		<form method="post" action="chooseTable.php">
 			<button type="submit">Filter Records for Another Table</button>
 		</form>
@@ -64,6 +78,7 @@
 </html>
 
 <?php
-	$result && $result->free();
-	$mysqli && $mysqli->close();
+	!empty($result) && $result->free();
+	!empty($stmt) && $stmt->close();
+	!empty($mysqli) && $mysqli->close();
 ?>

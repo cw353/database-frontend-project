@@ -39,8 +39,19 @@
 
 	$query = 'update ' . $table->getName() . ' set ' . join(', ', $set_expr) . ' where ' . join(' and ', $filter_expr);
 
+	$param_var = array_merge($set_var, $filter_var);
+	$param_types = $set_types.$filter_types;
 
-	$num_affected = executeQueryGetAffected($mysqli, $query, array_merge($set_var, $filter_var), $set_types.$filter_types);
+  // if using variable parameters, use prepared statement
+  if (sizeof($param_var) > 0) {
+    $stmt = $mysqli->prepare($query);
+    $stmt->bind_param($param_types, ...$param_var);
+		$num_affected = $stmt->execute() ? $stmt->affected_rows : -1;
+  } else {
+    // otherwise, use regular query
+    $num_affected = $mysqli->query($query) ? $mysqli->affected_rows : -1;
+  }
+
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +63,7 @@
 	<body>
 		<?php
 			if ($num_affected < 0) {
-				echo "<p>An error occurred and the operation could not be completed.</p>";
+				echo '<p>An error occurred and the operation could not be completed. ' . $mysqli->error . '</p>';
 			} else {
 				echo "<p>The operation has succeeded. $num_affected record";
 				echo $num_affected === 1 ? ' has' : 's have';
@@ -63,6 +74,7 @@
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<button type="submit">View Results</button>
 		</form>
+		<br>
 		<form method="post" action="chooseTable.php">
 			<button type="submit">Filter Records for Another Table</button>
 		</form>
@@ -71,5 +83,6 @@
 </html>
 
 <?php
-	$mysqli && $mysqli->close();
+	!empty($stmt) && $stmt->close();
+	!empty($mysqli) && $mysqli->close();
 ?>

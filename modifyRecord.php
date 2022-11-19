@@ -23,7 +23,17 @@
 	}
 
 	$query = formulateSelectQuery($table, $filter_expr);
-	$result = executeQueryGetResult($mysqli, $query, $filter_var, $filter_types);
+
+	// if filtering data, use prepared statement
+  if (sizeof($filter_var) > 0) {
+    $stmt = $mysqli->prepare($query);
+    $stmt->bind_param($filter_types, ...$filter_var);
+    $result = $stmt->execute() ? $stmt->get_result() : null;
+  } else {
+    // otherwise, use regular query
+    $result = $mysqli->query($query);
+  }
+
 ?>
 
 <!DOCTYPE html>
@@ -34,9 +44,7 @@
 
 	<body>
 		<?php if (!$result): ?>
-			<p>An error occurred while trying to process your query.</p>
-		<?php elseif ($result && $result->num_rows < 1): ?>
-			<p>No records matching your query were found.</p>
+     	<p>An error occurred while trying to process your query. <?php $mysqli->error ?></p>;
 		<?php else: ?>
 			<form method="get" action="executeModifyRecord.php">
 				<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
@@ -47,12 +55,11 @@
 			</form>
 		<?php endif; ?>
 
-
-
 	</body>
 </html>
 
 <?php
-	$result && $result->free();
-	$mysqli && $mysqli->close();
+	!empty($result) && $result->free();
+	!empty($stmt) && $stmt->close();
+	!empty($mysqli) && $mysqli->close();
 ?>
