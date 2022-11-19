@@ -141,11 +141,13 @@
 			if ($col->isWritable()) {
 				$colname = sanitizeHtml($col->getName());
 				$toReturn .= "<tr><td>" . sanitizeHtml($col->getLabel()) ."</td><td>";
+				$toReturn .= '<span' . ($col->isOptional() ? '>' :  " class='required'>");
 				if ($col->getForeignKeyInfo()) {
 					$toReturn .= getForeignKeyDropdown($col, $mysqli, $record ? $record[$colname] : null, $colname);
 				} else {
 					$toReturn .= getColumnInput($col, $record ? $record[$colname] : null);
 				}
+				$toReturn .= '</span>';
 				$toReturn .= '</td></tr>';
 			}
 		}
