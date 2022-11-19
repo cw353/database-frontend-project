@@ -57,7 +57,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Execute Modify Record</title>
+		<title>Modify Record Results</title>
 	</head>
 
 	<body>

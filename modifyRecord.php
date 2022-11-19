@@ -3,7 +3,6 @@
 <?php
 	require_once 'helperFunctions.php';
 	require_once 'tables.php';
-	require_once 'operators.php';
 
 	$mysqli = new mysqli('localhost', 'root', 'root', 'project');
 	$tablename = $_GET['table'];
