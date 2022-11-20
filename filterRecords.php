@@ -45,6 +45,15 @@
 				}
 			?>
 			</table>
+			<label>
+				<input type="radio" name="joinop" value="a" checked>
+				Match All
+			</label>
+			<label>
+				<input type="radio" name="joinop" value="o">
+				Match Any
+			</label>
+			<br>
 			<button type="submit">Apply Filter</button>
 		</form>
 

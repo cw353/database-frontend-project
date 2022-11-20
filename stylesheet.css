@@ -33,8 +33,17 @@ table caption {
 }
 
 button[type=submit] {
-	margin-top: 5px;
+	margin-top: 10px;
 	margin-bottom: 5px;
+}
+
+input, select {
+	margin: 1px;
+}
+
+input[type=radio] {
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 header {

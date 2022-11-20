@@ -12,6 +12,7 @@
 	$filter_expr = []; // filter expressions
 	$param_var = []; // comparands to bind for filters
 	$param_types = ''; // types of variables to bind for filters
+	$joinop = (isset($_GET['joinop']) && $_GET['joinop'] === 'o') ? ' or ' : ' and ';
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
 		// add to filters only if comparand was provided
@@ -32,7 +33,7 @@
 		}
 	}
 
-	$query = formulateSelectQuery($table, $filter_expr);
+	$query = formulateSelectQuery($table, $filter_expr, $joinop);
 
 	// if using variable parameters, use prepared statement
 	if (sizeof($param_var) > 0) {

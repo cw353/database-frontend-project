@@ -15,7 +15,7 @@
 	}
 
 	/* formulate a select query for the specified table object */
-	function formulateSelectQuery(Table $table, $filters = null) {
+	function formulateSelectQuery(Table $table, $filters = null, string $joinop = ' and ') {
 		$query = 'select ';
 		$columns = $table->getColumns();
 		$numcols = sizeof($columns);
@@ -25,7 +25,7 @@
 		}
 		$query .= ' from ' . $table->getName();
 		if (!empty($filters)) {
-			$query .= ' where ' . join(' and ', $filters);
+			$query .= ' where ' . join($joinop, $filters);
 		}
 		$query .= ' order by ' . join(', ', $table->getPrimaryKeys());
 		return $query;
