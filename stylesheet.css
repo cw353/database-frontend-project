@@ -46,7 +46,20 @@ input[type=radio] {
 	margin-bottom: 10px;
 }
 
+h1 {
+	font-size: 1.8em;
+}
+
 header {
 	font-size: 1.1em;
 	margin-bottom: 10px;
+}
+
+.motto {
+	font-family: "Papyrus", fantasy;
+	font-style: italic;
+}
+
+.motto .faded {
+	opacity: 0.1;
 }

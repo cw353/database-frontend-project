@@ -55,15 +55,15 @@
       } else {
         echo "<p>The operation has succeeded. $num_affected record";
         echo $num_affected === 1 ? ' has' : 's have';
-        echo ' been modified.</p>';
+        echo ' been inserted.</p>';
       }
     ?>
 		<form method="get" action="viewFilteredRecords.php">
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<button type="submit">View Results</button>
 		</form>
-		<form method="post" action="chooseTable.php">
-			<button type="submit">Filter Records for Another Table</button>
+		<form method="post" action="index.php">
+			<button type="submit">Return to Home</button>
 		</form>
 
 	</body>
