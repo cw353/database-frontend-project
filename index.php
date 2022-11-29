@@ -9,7 +9,7 @@
 
 	<body>
 		<h1>ABC Dispatcher Company Dashboard</h1>
-		<p class="motto">NEITHER RAIN NOR SNOW NOR GLO<span class="faded">O</span>M OF NI<span class="faded">GH</span>T CAN STAY THESE MES<span class="faded">S</span>ENGERS ABO<span class="faded">U</span>T THEIR DUTY.</p>
+		<p class="motto">NEITHER RAIN NOR SNOW NOR GLOOM OF NIGHT CAN STAY THESE MESSENGERS ABOUT THEIR DUTY.</p>
 		<header>Choose an action:</header>
 		<form method="get" action="chooseTable.php">
 			<input type="hidden" name="action" value="view">
