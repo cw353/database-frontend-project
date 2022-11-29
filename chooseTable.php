@@ -6,7 +6,7 @@
 
 	switch ($_GET['action']) {
 		case "view":
-			$action = "viewFilteredRecords.php";
+			$action = "viewRecords.php";
 			$actionDesc = "for which to view records";
 			break;
 		case "filter":

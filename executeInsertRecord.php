@@ -58,7 +58,7 @@
         echo ' been inserted.</p>';
       }
     ?>
-		<form method="get" action="viewFilteredRecords.php">
+		<form method="get" action="viewRecords.php">
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
 			<button type="submit">View Results</button>
 		</form>
