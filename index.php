@@ -9,7 +9,7 @@
 
 	<body>
 		<h1>ABC Dispatcher Company Dashboard</h1>
-		<p class="motto">NEITHER RAIN NOR SNOW NOR GLOOM OF NIGHT CAN STAY THESE MESSENGERS ABOUT THEIR DUTY.</p>
+		<p class="motto">NEITHER RAIN NOR SNOW NOR GLOOM OF NIGHT CAN STAY THESE MESSENGERS ABOUT THEIR DUTY.</p><!-- quote from "Going Postal" by Terry Pratchett -->
 		<header>Choose an action:</header>
 		<form method="get" action="chooseTable.php">
 			<input type="hidden" name="action" value="view">
