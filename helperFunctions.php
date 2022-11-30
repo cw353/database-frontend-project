@@ -44,7 +44,7 @@
 		foreach($table->getPrimaryKeys() as $pk) {
 			$params .= '&' . sanitizeHtml($pk) . '=' . sanitizeHtml($record[$pk]);
 		}
-		return "<a href='modifyRecord.php?table=$tablename" . "$params'>Modify Record</a>" . " / <a href='deleteRecord.php?table=$tablename" . "$params'>Delete Record</a>";
+		return "<a href='modifyRecord.php?table=$tablename" . "$params'>Modify Record</a>" . " / <a href='confirmDeleteRecord.php?table=$tablename" . "$params'>Delete Record</a>";
 	}
 
 	function getResultTable(mysqli_result $result, Table $table) {

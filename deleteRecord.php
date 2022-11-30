@@ -52,7 +52,7 @@
     ?>
 		<form method="get" action="viewRecords.php">
 			<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">
-			<button type="submit">View Results</button>
+			<button type="submit">View Modified Table</button>
 		</form>
 		<form method="post" action="index.php">
 			<button type="submit">Return to Home</button>
