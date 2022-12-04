@@ -1,3 +1,4 @@
+<!-- Confirm request to delete selected record -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <!DOCTYPE html>

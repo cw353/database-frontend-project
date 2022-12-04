@@ -1,3 +1,4 @@
+<!-- Execute record modification -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php

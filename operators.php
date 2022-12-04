@@ -1,3 +1,4 @@
+<!-- Information about operators for use in filtering -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php

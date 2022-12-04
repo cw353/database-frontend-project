@@ -1,8 +1,10 @@
+<!-- Information about tables in the database -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php
 	require_once 'dbClasses.php';
 
+	// associative array of Table objects, each representing a table in the database, with the table name as the key
   $tables = array(
 		'delivery' => new Table('delivery', 'Deliveries', ['regionid', 'productid', 'supplierid'], [
 			new Column('regionid', 'Region ID', 'int', new ForeignKeyInfo('region', 'regionid')),

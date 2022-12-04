@@ -1,3 +1,4 @@
+<!-- Filter records for selected table -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php
@@ -30,6 +31,7 @@
 				</tr>
 			<?php
 				foreach ($table->getColumns() as $col) {
+					// enable filtering only for readable columns
 					if ($col->isReadable()) {
 						$colname = sanitizeHtml($col->getName());
 						echo '<tr>';

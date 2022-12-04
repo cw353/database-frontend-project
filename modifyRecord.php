@@ -1,3 +1,4 @@
+<!-- Get user input for modifying a record -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php

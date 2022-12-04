@@ -1,3 +1,4 @@
+<!-- Various helper functions -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php

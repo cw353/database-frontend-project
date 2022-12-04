@@ -1,4 +1,5 @@
-<rphp header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
+<!-- Execute record insertion -->
+<?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php
 	require_once 'helperFunctions.php';

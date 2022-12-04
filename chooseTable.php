@@ -1,3 +1,4 @@
+<!-- Choose a table for viewing, filtering, or inserting records -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php

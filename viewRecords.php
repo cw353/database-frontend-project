@@ -1,3 +1,4 @@
+<!-- View (optionally filtered) records for the selected table -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php
@@ -12,14 +13,14 @@
 	$filter_expr = []; // filter expressions
 	$param_var = []; // comparands to bind for filters
 	$param_types = ''; // types of variables to bind for filters
-	$joinop = (isset($_GET['joinop']) && $_GET['joinop'] === 'o') ? ' or ' : ' and ';
+	$joinop = (isset($_GET['joinop']) && $_GET['joinop'] === 'o') ? ' or ' : ' and '; // operator to use when joining SQL clauses ('and' or 'or')
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
-		// add to filters only if comparand was provided
+		// add the column to filters only if a comparand was provided
 		if (!empty($_GET[$colname])) {
 			// operator info (if none provided, assume default case 'e')
 			$op = isset($_GET[$colname.'_op']) ? $_GET[$colname.'_op'] : 'e';
-			// comparand
+			// comparand (including wildcard pattern matching characters if required by the selected operator)
 			$comparand = (in_array($op, ['c', 'nc', 'end', 'nend']) ? '%' : '')
 				. $_GET[$colname]
 				. (in_array($op, ['c', 'nc', 'start', 'nstart'])  ? '%' : '');
