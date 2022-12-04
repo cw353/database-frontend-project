@@ -44,7 +44,7 @@
 		 * @param label The column name to display in the frontend.
 		 * @param type An informal descriptor of the data type of this column, used to select an appropriate HTML input element ('int' for integers, 'id' for counting number IDs, 'date' for dates, 'time' for times, 'money' for 2-decimal money values, and 'text' for textual values).
 		 * @param foreignKeyInfo If this column is a foreign key column, this is a ForeignKeyInfo object representing information about the relationship between this column and the other column it references. Null by default (should be null for all non-foreign-key columns).
-		 * @param inputConstraints A bit mask that determines whether this column is readable (COLUMN::READ - can be viewed by frontend users), writable (COLUMN::WRITE - can be modified by frontend users), and/or optional (COLUMN::OPTIONAL - can be left null by frontend users). By default, columns are readable and writable but not optional.
+		 * @param inputConstraints A bit mask that determines whether this column is readable (COLUMN::READ - can be viewed by frontend users), writable (COLUMN::WRITE - can be modified by frontend users), and/or optional (COLUMN::OPTIONAL - can be left null by frontend users). (For example, columns representing derived attributes should be readable but not writable.) By default, columns are readable and writable but not optional.
 		 * @param sqlExpression A SQL expression that should be used to compute the contents of this column. Null by default (should be non-null only for columns representing derived attributes).
 		 */
 		function __construct(string $name, string $label, string $type, ForeignKeyInfo $foreignKeyInfo = null, int $inputConstraints = Column::READ|COLUMN::WRITE, string $sqlExpression = null) {

@@ -13,7 +13,7 @@
 	$filter_expr = []; // filter expressions
 	$param_var = []; // comparands to bind for filters
 	$param_types = ''; // types of variables to bind for filters
-	$joinop = (isset($_GET['joinop']) && $_GET['joinop'] === 'o') ? ' or ' : ' and '; // operator to use when joining SQL clauses ('and' or 'or')
+	$joinop = (isset($_GET['joinop']) && $_GET['joinop'] === 'o') ? 'or' : 'and'; // operator to use when joining SQL clauses ('and' or 'or')
 	foreach ($table->getColumns() as $col) {
 		$colname = $col->getName();
 		// add the column to filters only if a comparand was provided

@@ -9,10 +9,12 @@
 	$tablename = $_GET['table'];
 	$table = $tables[$tablename];
 
+	// construct the information necessary to set the new values
 	$set_expr = [];
 	$set_var = [];
 	$set_types = '';
 	foreach ($table->getColumns() as $col) {
+		// allow values to be modified only for writable columns
 		if ($col->isWritable()) {
 			$colname = $col->getName();
 			$comparand = $_GET[$colname];
@@ -27,6 +29,7 @@
 			}
 		}
 	}
+	// make sure that only the selected record is modified by using its primary key values in the where-clause of the query
 	$filter_expr = []; // filter expressions
 	$filter_var = []; // comparands to bind for filters
 	$filter_types = ''; // types of variables to bind for filters

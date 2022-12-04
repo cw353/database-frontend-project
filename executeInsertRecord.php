@@ -14,6 +14,7 @@
   $param_var = [];
   $param_types = '';
   foreach ($table->getColumns() as $col) {
+		// allow values to be inserted only for writable columns
 		if ($col->isWritable()) {
 	    $colname = $col->getName();
     	$val = $_GET[$colname];

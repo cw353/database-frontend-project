@@ -9,6 +9,7 @@
 	$tablename = $_GET['table'];
 	$table = $tables[$tablename];
 
+	// get the current data in the record for display as a placeholder
 	$filter_expr = []; // filter expressions
 	$param_var = []; // comparands to bind for filters
 	$param_types = ''; // types of variables to bind for filters

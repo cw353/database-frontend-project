@@ -1,4 +1,4 @@
-<!-- Various helper functions -->
+<!-- Various helper functions for sanitization, formulating queries, generating output, etc. -->
 <?php header("X-Clacks-Overhead: GNU Terry Pratchett"); ?>
 
 <?php
@@ -10,13 +10,18 @@
 			return mysqli_real_escape_string($mysqli, $input);	
 	}
 
-	/* sanitize a string for use in html (returns empty string if empty) */
+	/* sanitize a string for use in html (returns empty string if argument is empty) */
 	function sanitizeHtml(string $input = null) {
 			return empty($input) ? '' : htmlspecialchars($input, ENT_QUOTES);	
 	}
 
-	/* formulate a select query for the specified table object */
-	function formulateSelectQuery(Table $table, $filters = null, string $joinop = ' and ') {
+	/**
+	 * Formulate a select query for the specified Table object.
+	 * @param table The Table object.
+	 * @param filters An array of one or more SQL expressions to use when constructing the where-clause (optional).
+	 * @param joinop The operator to use to join the SQL expressions in the where-clause ('and' by default).
+	 */
+	function formulateSelectQuery(Table $table, $filters = null, string $joinop = 'and') {
 		$query = 'select ';
 		$columns = $table->getColumns();
 		$numcols = sizeof($columns);
@@ -26,19 +31,20 @@
 		}
 		$query .= ' from ' . $table->getName();
 		if (!empty($filters)) {
-			$query .= ' where ' . join($joinop, $filters);
+			$query .= ' where ' . join(" $joinop ", $filters);
 		}
 		$query .= ' order by ' . join(', ', $table->getPrimaryKeys());
 		return $query;
 	}
 
-	/* get a hyperlink to display for a foreign key value */
+	/* Get a hyperlink for a foreign key value that displays the value and, when clicked, will take the user to a page with information about the record referenced by the foreign key. */
 	function getForeignKeyLink(string $val, ForeignKeyInfo $foreignKeyInfo) {
 		$table = $foreignKeyInfo->getTable();
 		$field = $foreignKeyInfo->getField();
 		return "<a href='viewRecords.php?table=$table&$field=$val&" . $field.'_op' . "=e'>$val</a>";
 	}
 
+	/* Get hyperlinks for a record to allow the user to act on that record by modifying or deleting it. */
 	function getActionLinks(Table $table, array $record) {
 		$tablename = sanitizeHtml($table->getName());
 		$params = '';
@@ -48,7 +54,9 @@
 		return "<a href='modifyRecord.php?table=$tablename" . "$params'>Modify Record</a>" . " / <a href='confirmDeleteRecord.php?table=$tablename" . "$params'>Delete Record</a>";
 	}
 
+	/* Get an HTML table presenting the result of a select query for the specified Table object. */
 	function getResultTable(mysqli_result $result, Table $table) {
+		// present the number of rows in the result
 		$toReturn = "<p>$result->num_rows matching record" . ($result->num_rows === 1 ? ' was ' : 's were ') . 'found.</p>';
 		if ($result->num_rows > 0) {
 			$toReturn .= "<table class='viewtable'>";
@@ -63,6 +71,7 @@
 			while ($record = $result->fetch_assoc()) {
 				$toReturn .= '<tr>';
 				foreach ($table->getColumns() as $col) {
+					// display only readable columns
 					if ($col->isReadable()) {
 						$val = sanitizeHtml($record[$col->getName()]);
 						$foreignKeyInfo = $col->getForeignKeyInfo();
@@ -71,6 +80,7 @@
 						$toReturn .= '</td>';
 					}
 				}
+				// include action links to allow the user to modify and delete the record
 				$toReturn .= '<td>' . getActionLinks($table, $record) . '</td>';
 				$toReturn .= '</tr>';
 			}
@@ -79,7 +89,7 @@
 		return $toReturn;
 	}
 
-	/* Return a dropdown for foreign key. In case of SQL error, returns input instead. Precondition: $col->getForeignKeyInfo() does not return null. */
+	/* Get a dropdown with all possible values for a foreign key. If a SQL error occurs, returns a basic HTML input instead. Precondition: $col->getForeignKeyInfo() does not return null. */
 	function getForeignKeyDropdown(Column $col, mysqli $mysqli, string $value = null, string $selectname) {
 		$foreignKeyInfo = $col->getForeignKeyInfo();
 		$table = $foreignKeyInfo->getTable();
@@ -100,6 +110,12 @@
 		return $toReturn;
 	}
 
+	/**
+	 * Get an HTML input element for the given Column object.
+	 * @param col The Column object.
+	 * @param val A value to use as a placeholder (optional).
+	 * @param enforceRequired Whether or not to mark this input element as required if col.isOptional() returns true. True by default.
+	 */
 	function getColumnInput(Column $col, string $val = null, bool $enforceRequired = true) {
 		$toReturn = "<input name='" . sanitizeHtml($col->getName()) . "'";
 		switch ($col->getType()) {

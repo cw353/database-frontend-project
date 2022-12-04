@@ -41,7 +41,7 @@
 							echo "<option value='" . sanitizeHtml($key) . "'>" . sanitizeHtml($val['label']) . '</option>';
 						}
 						echo '</select></td>';
-						echo '<td>' . getColumnInput($col, null, false) . '</td';
+						echo '<td>' . getColumnInput($col, null, false) . '</td'; // allow user to leave filter field blank by not enforcing required attribute for non-optional columns
 						echo '</tr>';
 					}
 				}
