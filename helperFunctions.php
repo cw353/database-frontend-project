@@ -114,7 +114,7 @@
 	 * Get an HTML input element for the given Column object.
 	 * @param col The Column object.
 	 * @param val A value to use as a placeholder (optional).
-	 * @param enforceRequired Whether or not to mark this input element as required if col.isOptional() returns true. True by default.
+	 * @param enforceRequired Whether or not to use the "required" attribute for this input if col.isOptional() returns true. True by default.
 	 */
 	function getColumnInput(Column $col, string $val = null, bool $enforceRequired = true) {
 		$toReturn = "<input name='" . sanitizeHtml($col->getName()) . "'";
@@ -147,6 +147,12 @@
 		return $toReturn;
 	}
 
+	/**
+	 * Get an HTML table that allows the user to input values for a record of the specified Table object.
+	 * @param table The Table object.
+	 * @param mysqli A mysqli object to use for querying the database (to retrieve foreign key values).
+	 * @param record An associative array of values to use as placeholders (or null if no placeholders should be used) (e.g. if a record is being modified by the user, the current values of the record will be displayed as placeholders if included in this parameter). Null by default.
+	 */
 	function getModifiableTable(Table $table, mysqli $mysqli, array $record = null) {
 		$toReturn = "<p class='red'>*: required</p>";
 		$toReturn .= '<table><tr><th>Field</th><th>Value</th></tr>';
@@ -156,10 +162,11 @@
 			}
 		}
 		foreach ($table->getColumns() as $col) {
+			// allow input only for writable columns
 			if ($col->isWritable()) {
 				$colname = sanitizeHtml($col->getName());
 				$toReturn .= "<tr><td>" . sanitizeHtml($col->getLabel()) ."</td><td>";
-				$toReturn .= '<span' . ($col->isOptional() ? '>' :  " class='required'>");
+				$toReturn .= '<span' . ($col->isOptional() ? '>' :  " class='required'>"); // mark required fields using CSS
 				if ($col->getForeignKeyInfo()) {
 					$toReturn .= getForeignKeyDropdown($col, $mysqli, $record ? $record[$colname] : null, $colname);
 				} else {
