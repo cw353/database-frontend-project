@@ -46,7 +46,7 @@
 
 	<body>
 		<?php if (!$result): ?>
-     	<p>An error occurred while trying to process your query. <?php $mysqli->error ?></p>;
+     	<p>An error occurred while trying to process your query.</p>;
 		<?php else: ?>
 			<form method="get" action="executeModifyRecord.php">
 				<input type="hidden" name="table" value="<?php echo sanitizeHtml($tablename); ?>">

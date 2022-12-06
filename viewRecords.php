@@ -58,7 +58,7 @@
 	<body>
 		<?php
     	if (!$result) {
-     		echo '<p>An error occurred while trying to process your query. ' . $mysqli->error . '</p>';
+     		echo '<p>An error occurred while trying to process your query.</p>';
     	} else {
 				echo getResultTable($result, $table);
 			}
